@@ -3,11 +3,14 @@ const int new_avg_threshold = 2000;
 const int detection_threshold = 100;
 const int lower_limit_distance = 7;
 const int external_led_pin = 7;
+const int revolutions_per_kWh = 375;
 
+int Ws_per_revolution;
 
 void setup() {
   Serial.begin(9600);
   pinMode(external_led_pin, OUTPUT);
+  Ws_per_revolution = 3600000 / revolutions_per_kWh;
 }
 
 
