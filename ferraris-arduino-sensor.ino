@@ -1,6 +1,8 @@
 #include <SPI.h>
 #include <Ethernet.h>
+#include <EthernetUdp.h>
 #include <PubSubClient.h>
+#include <TimeLib.h>
 
 const int sensor_pin = A0;
 const int external_led_pin = 7;
@@ -12,6 +14,7 @@ const int revolutions_per_kWh = 375;
 
 byte mac[] = { 0x08, 0x00, 0x27, 0xFC, 0xA9, 0x3A };
 IPAddress fallback_ip(192, 168, 188, 178);
+unsigned int localPort = 8888;  // local port to listen for UDP packets
 
 const char mqtt_server[] = "fgseitsrancher.wifa.intern.uni-leipzig.de";
 const int mqtt_port = 1883;
@@ -20,33 +23,44 @@ const char pw[] = "sepl";
 const char client_name[] = "080027FCA93A";
 const char topic[] = "electricity_meter/080027FCA93A/consumption";
 
+const int timeZone = 1;     // Central European Time
+//const int timeZone = -5;  // Eastern Standard Time (USA)
+//const int timeZone = -4;  // Eastern Daylight Time (USA)
+//const int timeZone = -8;  // Pacific Standard Time (USA)
+//const int timeZone = -7;  // Pacific Daylight Time (USA)
+char timeServer[] = "time.nist.gov"; // time.nist.gov NTP server
+
+
 
 EthernetClient ethClient;
+EthernetUDP Udp;
 PubSubClient client(ethClient);
 
 
 void setup() {
   Serial.begin(9600);
+
+  // wait for serial port to connect. Needed for native USB port only
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    ;
   }
+
+  // set LED pin
   pinMode(external_led_pin, OUTPUT);
-  
+
+  // set server for MQTT client
   client.setServer(mqtt_server, mqtt_port);
-  
+
+  // start ethernet
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, fallback_ip);
   }
+  
   // give the Ethernet shield some time to initialize:
   delay(1500);
-  /*Serial.println("Configuration:");
-  Serial.print("New average threshold: " + String(new_avg_threshold));
-  Serial.println("Detection threshold: " + String(detection_threshold));
-  Serial.println("Lower limit distance: " + String(lower_limit_distance));
-  Serial.println("Revolutions per kWh: " + String(revolutions_per_kWh));
-  Serial.println();*/
+
   Serial.println("Network:");
   Serial.print("MAC address: ");
   for (byte thisByte = 0; thisByte < 6; thisByte++) {
@@ -70,6 +84,10 @@ void setup() {
     }
   }
   Serial.println();
+  Serial.println("Waiting for NTP sync ...");
+  Udp.begin(localPort);
+  setSyncProvider(getNtpTime);
+  Serial.println();
   Serial.println("Waiting for MQTT connection ...");
   if (client.connect(client_name, user, pw)) {
     Serial.println("Connected to MQTT broker");
@@ -81,6 +99,61 @@ void setup() {
   Serial.println("Waiting for first calibration ...");
   Serial.println();
 }
+
+
+
+
+const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
+byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
+
+time_t getNtpTime() {
+  while (Udp.parsePacket() > 0) ; // discard any previously received packets
+  Serial.println("Transmit NTP Request");
+  sendNTPpacket(timeServer);
+  uint32_t beginWait = millis();
+  while (millis() - beginWait < 1500) {
+    int size = Udp.parsePacket();
+    if (size >= NTP_PACKET_SIZE) {
+      Serial.println("Receive NTP Response");
+      Udp.read(packetBuffer, NTP_PACKET_SIZE);  // read packet into the buffer
+      unsigned long secsSince1900;
+      // convert four bytes starting at location 40 to a long integer
+      secsSince1900 =  (unsigned long)packetBuffer[40] << 24;
+      secsSince1900 |= (unsigned long)packetBuffer[41] << 16;
+      secsSince1900 |= (unsigned long)packetBuffer[42] << 8;
+      secsSince1900 |= (unsigned long)packetBuffer[43];
+      return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
+    }
+  }
+  Serial.println("No NTP Response :-(");
+  return 0; // return 0 if unable to get the time
+}
+
+// send an NTP request to the time server at the given address
+void sendNTPpacket(char* address) {
+  // set all bytes in the buffer to 0
+  memset(packetBuffer, 0, NTP_PACKET_SIZE);
+  // Initialize values needed to form NTP request
+  // (see URL above for details on the packets)
+  packetBuffer[0] = 0b11100011;   // LI, Version, Mode
+  packetBuffer[1] = 0;     // Stratum, or type of clock
+  packetBuffer[2] = 6;     // Polling Interval
+  packetBuffer[3] = 0xEC;  // Peer Clock Precision
+  // 8 bytes of zero for Root Delay & Root Dispersion
+  packetBuffer[12]  = 49;
+  packetBuffer[13]  = 0x4E;
+  packetBuffer[14]  = 49;
+  packetBuffer[15]  = 52;
+  // all NTP fields have been given values, now
+  // you can send a packet requesting a timestamp:                 
+  Udp.beginPacket(address, 123); //NTP requests are to port 123
+  Udp.write(packetBuffer, NTP_PACKET_SIZE);
+  Udp.endPacket();
+}
+
+
+
+
 
 
 bool detected = false;
