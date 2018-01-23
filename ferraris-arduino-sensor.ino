@@ -17,8 +17,8 @@ const char mqtt_server[] = "fgseitsrancher.wifa.intern.uni-leipzig.de";
 const int mqtt_port = 1883;
 const char user[] = "sepl";
 const char pw[] = "sepl";
-const char client_name[] = "FC:A9:3A";
-const char topic[] = "electricity-meter/FC:A9:3A/consumption";
+const char client_name[] = "080027FCA93A";
+const char topic[] = "electricity_meter/080027FCA93A/consumption";
 
 
 EthernetClient ethClient;
@@ -107,9 +107,8 @@ void loop() {
           digitalWrite(external_led_pin, HIGH);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\"}";
-            char payload[payload_str.length()];
-            payload_str.toCharArray(payload, payload_str.length());
-            client.publish(topic, payload);
+            Serial.println(payload_str.c_str());
+            client.publish(topic, payload_str.c_str());
           }
         }
       }
@@ -141,7 +140,7 @@ void loop() {
   Ethernet.maintain();
   if (client.connected()) {
     long now = millis();
-    if (now - last_loop > 20000) {
+    if (now - last_loop > 10000) {
       last_loop = now;
       client.loop();
     }
