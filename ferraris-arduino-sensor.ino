@@ -12,7 +12,7 @@ const int detection_threshold = 100;
 const int lower_limit_distance = 7;
 const int revolutions_per_kWh = 375;
 
-byte mac[] = { 0x08, 0x00, 0x27, 0xFC, 0xA9, 0x3A };
+byte mac[] = { 0x08, 0x00, 0x15, 0xBC, 0xD7, 0x4B };
 IPAddress fallback_ip(192, 168, 188, 178);
 unsigned int localPort = 8888;  // local port to listen for UDP packets
 
@@ -20,14 +20,10 @@ const char mqtt_server[] = "fgseitsrancher.wifa.intern.uni-leipzig.de";
 const int mqtt_port = 1883;
 const char user[] = "sepl";
 const char pw[] = "sepl";
-const char client_name[] = "080027FCA93A";
-const char topic[] = "electricity_meter/080027FCA93A/consumption";
+const char client_name[] = "ferraris_arduino_001";
+const char topic[] = "ferraris_arduino_001/consumption";
 
 const int timeZone = 1;     // Central European Time
-//const int timeZone = -5;  // Eastern Standard Time (USA)
-//const int timeZone = -4;  // Eastern Daylight Time (USA)
-//const int timeZone = -8;  // Pacific Standard Time (USA)
-//const int timeZone = -7;  // Pacific Daylight Time (USA)
 char timeServer[] = "time.nist.gov"; // time.nist.gov NTP server
 
 
@@ -56,12 +52,13 @@ void setup() {
     Serial.println("Failed to configure Ethernet using DHCP");
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, fallback_ip);
-  }
-  
-  // give the Ethernet shield some time to initialize:
+  } 
+  // give the Ethernet shield some time to initialize
   delay(1500);
+  Serial.println("Waiting for network:");
+  delay(500);
 
-  Serial.println("Network:");
+  // print network info
   Serial.print("MAC address: ");
   for (byte thisByte = 0; thisByte < 6; thisByte++) {
     if (mac[thisByte] < 0x10) {
@@ -80,14 +77,29 @@ void setup() {
     if (thisByte < 3) {
       Serial.print(".");
     } else {
+      if (Ethernet.localIP() == fallback_ip) {
+        Serial.print(" (static fallback ip)");
+      }
       Serial.println();
     }
   }
   Serial.println();
+
+  // start UDP and set local time
   Serial.println("Waiting for NTP sync ...");
   Udp.begin(localPort);
+  // give some time to initialize:
+  delay(1000);
   setSyncProvider(getNtpTime);
+  delay(500);
+  if (timeStatus() == timeSet) {
+    Serial.println("Success: " + dateTimeISO8601());
+  } else {
+    Serial.println("Sync with NTP server failed");
+  }
   Serial.println();
+
+  // start MQTT client
   Serial.println("Waiting for MQTT connection ...");
   if (client.connect(client_name, user, pw)) {
     Serial.println("Connected to MQTT broker");
@@ -95,9 +107,26 @@ void setup() {
     Serial.println("Connection to MQTT broker failed");
   }
   Serial.println();
+
+  // print final info
   Serial.println("Starting routine ...");
   Serial.println("Waiting for first calibration ...");
   Serial.println();
+}
+
+
+
+
+String dateTimeISO8601() {
+  return String(year()) + "-" + addZero(month()) + "-" + addZero(day()) + "T" + addZero(hour()) + ":" + addZero(minute()) + ":" + addZero(second()) + "Z+1";
+}
+
+String addZero(int digits) {
+  if(digits < 10) {
+    return "0" + String(digits);
+  } else {
+    return String(digits);
+  }
 }
 
 
@@ -108,13 +137,13 @@ byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 
 time_t getNtpTime() {
   while (Udp.parsePacket() > 0) ; // discard any previously received packets
-  Serial.println("Transmit NTP Request");
+  //Serial.println("Transmit NTP Request");
   sendNTPpacket(timeServer);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {
     int size = Udp.parsePacket();
     if (size >= NTP_PACKET_SIZE) {
-      Serial.println("Receive NTP Response");
+      //Serial.println("Receive NTP Response");
       Udp.read(packetBuffer, NTP_PACKET_SIZE);  // read packet into the buffer
       unsigned long secsSince1900;
       // convert four bytes starting at location 40 to a long integer
@@ -125,7 +154,7 @@ time_t getNtpTime() {
       return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
     }
   }
-  Serial.println("No NTP Response :-(");
+  //Serial.println("No NTP Response");
   return 0; // return 0 if unable to get the time
 }
 
@@ -179,7 +208,7 @@ void loop() {
           Serial.println("detected = true");
           digitalWrite(external_led_pin, HIGH);
           if (client.connected()) {
-            String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\"}";
+            String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             Serial.println(payload_str.c_str());
             client.publish(topic, payload_str.c_str());
           }
