@@ -33,6 +33,18 @@ EthernetUDP Udp;
 PubSubClient client(ethClient);
 
 
+void blinkLED(int times=1, int wait=200) {
+  for (int bl = 0; bl < times; bl++) {
+    digitalWrite(external_led_pin, HIGH);
+    delay(wait);
+    digitalWrite(external_led_pin, LOW);
+    if (times > 1 and bl != times-1) {
+      delay(wait);
+    }
+  }
+}
+
+
 void setup() {
   Serial.begin(9600);
 
@@ -44,19 +56,28 @@ void setup() {
   // set LED pin
   pinMode(external_led_pin, OUTPUT);
 
+  // print start message
+  delay(2000);
+  Serial.println("Starting ...");
+  blinkLED(1, 1000);
+  Serial.println();
+  
   // set server for MQTT client
   client.setServer(mqtt_server, mqtt_port);
 
   // start ethernet
+  Serial.println("Waiting for network:");
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, fallback_ip);
-  } 
+    delay(1500);
+    blinkLED(3, 50);
+  } else {
+    delay(1500);
+    blinkLED();
+  }
   // give the Ethernet shield some time to initialize
-  delay(1500);
-  Serial.println("Waiting for network:");
-  delay(500);
 
   // print network info
   Serial.print("MAC address: ");
@@ -94,26 +115,28 @@ void setup() {
   delay(500);
   if (timeStatus() == timeSet) {
     Serial.println("Success: " + dateTimeISO8601());
+    blinkLED();
   } else {
     Serial.println("Sync with NTP server failed");
+    blinkLED(6, 50);
   }
   Serial.println();
 
   // start MQTT client
   Serial.println("Waiting for MQTT connection ...");
+  delay(1500);
   if (client.connect(client_name, user, pw)) {
     Serial.println("Connected to MQTT broker");
+    blinkLED();
   } else {
     Serial.println("Connection to MQTT broker failed");
+    blinkLED(9, 50);
   }
   Serial.println();
 
   // print final info
-  Serial.println("Starting routine ...");
   Serial.println("Waiting for first calibration ...");
-  Serial.println();
 }
-
 
 
 
