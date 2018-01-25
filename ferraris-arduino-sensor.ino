@@ -242,7 +242,7 @@ void loop() {
         if (detected == false) {
           detected = true;
           Serial.println("detected = true");
-          digitalWrite(external_led_pin, HIGH);
+          //digitalWrite(external_led_pin, HIGH);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             //Serial.println(payload_str.c_str());
@@ -255,7 +255,7 @@ void loop() {
       if (detected == true) {
         detected = false;
         Serial.println("detected = false");
-        digitalWrite(external_led_pin, LOW);
+        //digitalWrite(external_led_pin, LOW);
       }
     }
   }
