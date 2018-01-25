@@ -9,7 +9,7 @@ const int external_led_pin = 7;
 
 const int new_avg_threshold = 2000;
 const int detection_threshold = 100;
-const int lower_limit_distance = 7;
+const int lower_limit_distance = 5;
 const int revolutions_per_kWh = 375;
 
 byte mac[] = { 0x08, 0x00, 0x15, 0xBC, 0xD7, 0x4B };
@@ -111,15 +111,17 @@ void setup() {
   Udp.begin(localPort);
   // give some time to initialize:
   delay(1000);
-  setSyncProvider(getNtpTime);
-  delay(500);
-  if (timeStatus() == timeSet) {
+  //setSyncProvider(getNtpTime);
+  time_t ntp_time = getNtpTime();
+  if (ntp_time > 0) {
+    setTime(ntp_time);
     Serial.println("Success: " + dateTimeISO8601());
     blinkLED();
   } else {
     Serial.println("Sync with NTP server failed");
     blinkLED(6, 50);
   }
+  delay(500);
   Serial.println();
 
   // start MQTT client
@@ -219,12 +221,23 @@ int detection_threshold_count = 1;
 int Ws_per_revolution = 3600000 / revolutions_per_kWh;
 long last_loop = 0;
 
+long lowest = 0;
 
 void loop() {
   int reading = analogRead(sensor_pin);
+  /*if (lowest == 0) {
+    lowest = reading;
+  }
+  if (reading < lowest) {
+    lowest = reading;
+    Serial.println("low="+String(lowest));
+  }*/
   if (calibrated == true) {
-    if (reading < current_avg - lower_limit_distance) {
-      detection_threshold_count++;
+    if (reading < (current_avg - lower_limit_distance)) {
+      //Serial.println(detection_threshold_count);
+      if (detection_threshold_count <= detection_threshold) {
+        detection_threshold_count++;
+      }
       if (detection_threshold_count == detection_threshold) {
         if (detected == false) {
           detected = true;
@@ -232,7 +245,7 @@ void loop() {
           digitalWrite(external_led_pin, HIGH);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
-            Serial.println(payload_str.c_str());
+            //Serial.println(payload_str.c_str());
             client.publish(topic, payload_str.c_str());
           }
         }
@@ -257,7 +270,10 @@ void loop() {
     current_avg = tmp_avg;
     reading_sum = 0;
     iteration = 1;
-    calibrated = true;
+    if (calibrated == false) {
+      calibrated = true;
+      blinkLED(4, 20);
+    }
     Serial.println("Calibrated with average: " + String(current_avg));
   }
   tmp_avg = average;
