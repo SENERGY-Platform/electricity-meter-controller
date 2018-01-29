@@ -3,6 +3,7 @@
 #include <EthernetUdp.h>
 #include <PubSubClient.h>
 #include <TimeLib.h>
+#include <SoftwareReset.h>
 
 const int sensor_pin = A0;
 const int external_led_pin = 7;
@@ -45,6 +46,18 @@ void blinkLED(int times=1, int wait=200) {
 }
 
 
+void resetBoard(bool feedback=false) {
+  if (feedback == true) {
+    blinkLED(10, 50);
+  }
+  Serial.println();
+  Serial.println("Resetting board");
+  Serial.println();
+  delay(10);
+  softwareReset(STANDARD);
+}
+
+
 void setup() {
   Serial.begin(9600);
 
@@ -58,6 +71,8 @@ void setup() {
 
   // print start message
   delay(2000);
+  Serial.println("---------------------");
+  Serial.println();
   Serial.println("Starting ...");
   blinkLED(1, 1000);
   Serial.println();
@@ -72,7 +87,7 @@ void setup() {
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, fallback_ip);
     delay(1500);
-    blinkLED(3, 50);
+    blinkLED(5, 50);
   } else {
     delay(1500);
     blinkLED();
@@ -119,7 +134,8 @@ void setup() {
     blinkLED();
   } else {
     Serial.println("Sync with NTP server failed");
-    blinkLED(6, 50);
+    blinkLED(5, 50);
+    resetBoard();
   }
   delay(500);
   Serial.println();
@@ -132,7 +148,8 @@ void setup() {
     blinkLED();
   } else {
     Serial.println("Connection to MQTT broker failed");
-    blinkLED(9, 50);
+    blinkLED(5, 50);
+    resetBoard();
   }
   Serial.println();
 
@@ -241,7 +258,7 @@ void loop() {
       if (detection_threshold_count == detection_threshold) {
         if (detected == false) {
           detected = true;
-          Serial.println("detected = true");
+          Serial.println("Detected = true");
           //digitalWrite(external_led_pin, HIGH);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
@@ -254,7 +271,7 @@ void loop() {
       detection_threshold_count = 1;
       if (detected == true) {
         detected = false;
-        Serial.println("detected = false");
+        Serial.println("Detected = false");
         //digitalWrite(external_led_pin, LOW);
       }
     }
@@ -272,7 +289,7 @@ void loop() {
     iteration = 1;
     if (calibrated == false) {
       calibrated = true;
-      blinkLED(4, 20);
+      blinkLED();
     }
     Serial.println("Calibrated with average: " + String(current_avg));
   }
@@ -281,10 +298,15 @@ void loop() {
   Ethernet.maintain();
   if (client.connected()) {
     long now = millis();
-    if (now - last_loop > 10000) {
+    if (now - last_loop > 5000) {
       last_loop = now;
       client.loop();
+      blinkLED(1, 0);
     }
+  } else {
+    Serial.println();
+    Serial.println("MQTT connection lost");
+    resetBoard(true);
   }
   delay(7);
 }
