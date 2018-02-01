@@ -256,10 +256,9 @@ void loop() {
         if (detected == false) {
           detected = true;
           Serial.println(F("Detected = true"));
-          Serial.println(reading);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
-            //Serial.println(payload_str.c_str());
+            Serial.println(payload_str.c_str());
             client.publish(topic, payload_str.c_str());
           }
         }
