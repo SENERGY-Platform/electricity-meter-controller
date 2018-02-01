@@ -34,12 +34,10 @@ void blinkLED(const int *led_pin, int times=1, int pause=200) {
 }
 
 
-void resetBoard(bool feedback=false) {
-  if (feedback == true) {
-    blinkLED(&ext_led_pin, 10, 50);
-  }
+void resetBoard() {
+  blinkLED(&ext_led_pin, 5, 50);
   Serial.println();
-  Serial.println("Resetting board");
+  Serial.println(F("Resetting board"));
   Serial.println();
   delay(10);
   softwareReset(STANDARD);
@@ -47,9 +45,9 @@ void resetBoard(bool feedback=false) {
 
 
 void startEth(byte* mac, IPAddress fallback_ip) {
-  //Serial.println("Waiting for network:");
+  Serial.println(F("Waiting for network:"));
   if (Ethernet.begin(mac) == 0) {
-    //Serial.println("Failed to configure Ethernet using DHCP");
+    Serial.println(F("Failed to configure Ethernet using DHCP"));
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, fallback_ip);
     delay(1500);   // give the Ethernet shield some time to initialize
@@ -60,7 +58,7 @@ void startEth(byte* mac, IPAddress fallback_ip) {
   }
 
   // print network info
-  //Serial.print("MAC address: ");
+  Serial.print(F("MAC address: "));
   for (byte thisByte = 0; thisByte < 6; thisByte++) {
     if (mac[thisByte] < 0x10) {
       Serial.print("0");
@@ -72,14 +70,14 @@ void startEth(byte* mac, IPAddress fallback_ip) {
       Serial.println();
     }
   }
-  //Serial.print("IP address: ");
+  Serial.print(F("IP address: "));
   for (byte thisByte = 0; thisByte < 4; thisByte++) {
     Serial.print(Ethernet.localIP()[thisByte], DEC);
     if (thisByte < 3) {
       Serial.print(".");
     } else {
       if (Ethernet.localIP() == fallback_ip) {
-        Serial.print(" (static fallback ip)");
+        Serial.print(F(" (static fallback ip)"));
       }
       Serial.println();
     }
@@ -88,7 +86,7 @@ void startEth(byte* mac, IPAddress fallback_ip) {
 
 
 void setNtpTime(const char* timeServer, unsigned int localPort, int timeZone) {
-  //Serial.println("Waiting for NTP sync ...");
+  Serial.println(F("Waiting for NTP sync ..."));
   Udp.begin(localPort);
   // give some time to initialize:
   delay(1000);
@@ -96,27 +94,26 @@ void setNtpTime(const char* timeServer, unsigned int localPort, int timeZone) {
   time_t ntp_time = getNtpTime(timeServer, timeZone);
   if (ntp_time > 0) {
     setTime(ntp_time);
+    Serial.print(F("Success: "));
     Serial.println(dateTimeISO8601());
     blinkLED(&ext_led_pin);
   } else {
-    //Serial.println("Sync with NTP server failed");
-    blinkLED(&ext_led_pin, 5, 50);
+    Serial.println(F("Sync with NTP server failed"));
     resetBoard();
   }
   delay(500);
 }
 
 void startMqtt(const char* mqtt_server, const int mqtt_port, const char* user, const char* pw, const char* client_name) {
-  //Serial.println("Waiting for MQTT connection ...");
+  Serial.println(F("Waiting for MQTT connection ..."));
   // set server for MQTT client
   client.setServer(mqtt_server, mqtt_port);
   delay(1500);
   if (client.connect(client_name, user, pw)) {
-    //Serial.println("Connected to MQTT broker");
+    Serial.println(F("Connected to MQTT broker"));
     blinkLED(&ext_led_pin);
   } else {
-    //Serial.println("Connection to MQTT broker failed");
-    blinkLED(&ext_led_pin, 5, 50);
+    Serial.println(F("Connection to MQTT broker failed"));
     resetBoard();
   }
 }
@@ -136,18 +133,15 @@ String addZero(int digits) {
 }
 
 
-const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
-byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
-
 time_t getNtpTime(const char* timeServer, int timeZone) {
+  const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
+  byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
   while (Udp.parsePacket() > 0) ; // discard any previously received packets
-  //Serial.println("Transmit NTP Request");
-  sendNTPpacket(timeServer);
+  sendNTPpacket(timeServer, packetBuffer, &NTP_PACKET_SIZE);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {
     int size = Udp.parsePacket();
     if (size >= NTP_PACKET_SIZE) {
-      //Serial.println("Receive NTP Response");
       Udp.read(packetBuffer, NTP_PACKET_SIZE);  // read packet into the buffer
       unsigned long secsSince1900;
       // convert four bytes starting at location 40 to a long integer
@@ -158,15 +152,14 @@ time_t getNtpTime(const char* timeServer, int timeZone) {
       return secsSince1900 - 2208988800UL + timeZone * SECS_PER_HOUR;
     }
   }
-  //Serial.println("No NTP Response");
   return 0; // return 0 if unable to get the time
 }
 
 
 // send an NTP request to the time server at the given address
-void sendNTPpacket(const char* address) {
+void sendNTPpacket(const char* address, byte* packetBuffer, const int* NTP_PACKET_SIZE) {
   // set all bytes in the buffer to 0
-  memset(packetBuffer, 0, NTP_PACKET_SIZE);
+  memset(packetBuffer, 0, *NTP_PACKET_SIZE);
   // Initialize values needed to form NTP request
   // (see URL above for details on the packets)
   packetBuffer[0] = 0b11100011;   // LI, Version, Mode
@@ -181,7 +174,7 @@ void sendNTPpacket(const char* address) {
   // all NTP fields have been given values, now
   // you can send a packet requesting a timestamp:                 
   Udp.beginPacket(address, 123); //NTP requests are to port 123
-  Udp.write(packetBuffer, NTP_PACKET_SIZE);
+  Udp.write(packetBuffer, *NTP_PACKET_SIZE);
   Udp.endPacket();
 }
 
@@ -224,8 +217,6 @@ void setup() {
 }
 
 
-
-
 bool detected = false;
 long reading_sum = 0;
 long current_avg = 0;
@@ -241,16 +232,8 @@ long lowest = 0;
 
 void loop() {
   int reading = analogRead(sen_pin);
-  /*if (lowest == 0) {
-    lowest = reading;
-  }
-  if (reading < lowest) {
-    lowest = reading;
-    Serial.println("low="+String(lowest));
-  }*/
   if (calibrated == true) {
     if (reading < (current_avg - lower_limit_distance)) {
-      //Serial.println(detection_threshold_count);
       if (detection_threshold_count <= detection_threshold) {
         detection_threshold_count++;
       }
@@ -258,7 +241,6 @@ void loop() {
         if (detected == false) {
           detected = true;
           Serial.println(F("Detected = true"));
-          //digitalWrite(ext_led_pin, HIGH);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             //Serial.println(payload_str.c_str());
@@ -271,7 +253,6 @@ void loop() {
       if (detected == true) {
         detected = false;
         Serial.println(F("Detected = false"));
-        //digitalWrite(ext_led_pin, LOW);
       }
     }
   }
@@ -306,7 +287,7 @@ void loop() {
   } else {
     Serial.println();
     Serial.println(F("MQTT connection lost"));
-    resetBoard(true);
+    resetBoard();
   }
-  delay(7);
+  delay(1);
 }
