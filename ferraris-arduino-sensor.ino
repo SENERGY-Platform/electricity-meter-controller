@@ -7,11 +7,11 @@
 
 const int sen_pin = A0;
 const int led_pin = 6;
-const int ext_led_pin = 7;
+const int ext_led_pin = 3;
 
-const int new_avg_threshold = 2000;
+const int new_avg_threshold = 4000;
 const int detection_threshold = 100;
-const int lower_limit_distance = 5;
+const int lower_limit_distance = 7;
 const int revolutions_per_kWh = 375;
 
 const char topic[] = "ferraris_arduino_001/consumption";
@@ -137,7 +137,7 @@ time_t getNtpTime(const char* timeServer, int timeZone) {
   const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
   byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
   while (Udp.parsePacket() > 0) ; // discard any previously received packets
-  sendNTPpacket(timeServer, packetBuffer, &NTP_PACKET_SIZE);
+  sendNTPpacket(timeServer, &NTP_PACKET_SIZE, packetBuffer);
   uint32_t beginWait = millis();
   while (millis() - beginWait < 1500) {
     int size = Udp.parsePacket();
@@ -157,7 +157,7 @@ time_t getNtpTime(const char* timeServer, int timeZone) {
 
 
 // send an NTP request to the time server at the given address
-void sendNTPpacket(const char* address, byte* packetBuffer, const int* NTP_PACKET_SIZE) {
+void sendNTPpacket(const char* address, const int* NTP_PACKET_SIZE, byte* packetBuffer) {
   // set all bytes in the buffer to 0
   memset(packetBuffer, 0, *NTP_PACKET_SIZE);
   // Initialize values needed to form NTP request
@@ -179,6 +179,20 @@ void sendNTPpacket(const char* address, byte* packetBuffer, const int* NTP_PACKE
 }
 
 
+int denoisedRead(const int *sen_pin, const int *led_pin, int pause=2000) {
+  int reading_ir, reading_no_ir;
+  digitalWrite(*led_pin, HIGH);
+  delayMicroseconds(pause);
+  reading_ir = 1023 - analogRead(*sen_pin);
+  digitalWrite(*led_pin, LOW);
+  delayMicroseconds(pause);
+  reading_no_ir = 1023 - analogRead(*sen_pin);
+  // debug line
+  //Serial.print(String(reading_ir) + " - " + String(reading_no_ir) + " = ");
+  return reading_ir - reading_no_ir;
+}
+
+
 void setup() {
   Serial.begin(9600);
 
@@ -188,6 +202,7 @@ void setup() {
   }
 
   // set LED pin
+  pinMode(led_pin, OUTPUT);
   pinMode(ext_led_pin, OUTPUT);
 
   // print start message
@@ -231,7 +246,7 @@ long last_loop = 0;
 long lowest = 0;
 
 void loop() {
-  int reading = analogRead(sen_pin);
+  int reading = denoisedRead(&sen_pin, &led_pin, 1800);
   if (calibrated == true) {
     if (reading < (current_avg - lower_limit_distance)) {
       if (detection_threshold_count <= detection_threshold) {
@@ -241,6 +256,7 @@ void loop() {
         if (detected == false) {
           detected = true;
           Serial.println(F("Detected = true"));
+          Serial.println(reading);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             //Serial.println(payload_str.c_str());
@@ -271,8 +287,8 @@ void loop() {
       calibrated = true;
       blinkLED(&ext_led_pin);
     }
-    Serial.println(F("Calibrated with average: "));
-    Serial.print(String(current_avg));
+    Serial.print(F("Calibrated with average: "));
+    Serial.println(String(current_avg));
   }
   tmp_avg = average;
   iteration++;
