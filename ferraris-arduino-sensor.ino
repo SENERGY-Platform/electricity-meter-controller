@@ -5,28 +5,16 @@
 #include <TimeLib.h>
 #include <SoftwareReset.h>
 
-const int sensor_pin = A0;
-const int external_led_pin = 7;
+const int sen_pin = A0;
+const int led_pin = 6;
+const int ext_led_pin = 7;
 
 const int new_avg_threshold = 2000;
 const int detection_threshold = 100;
 const int lower_limit_distance = 5;
 const int revolutions_per_kWh = 375;
 
-byte mac[] = { 0x08, 0x00, 0x15, 0xBC, 0xD7, 0x4B };
-IPAddress fallback_ip(192, 168, 188, 178);
-unsigned int localPort = 8888;  // local port to listen for UDP packets
-
-const char mqtt_server[] = "fgseitsrancher.wifa.intern.uni-leipzig.de";
-const int mqtt_port = 1883;
-const char user[] = "sepl";
-const char pw[] = "sepl";
-const char client_name[] = "ferraris_arduino_001";
 const char topic[] = "ferraris_arduino_001/consumption";
-
-const int timeZone = 1;     // Central European Time
-char timeServer[] = "time.nist.gov"; // time.nist.gov NTP server
-
 
 
 EthernetClient ethClient;
@@ -34,13 +22,13 @@ EthernetUDP Udp;
 PubSubClient client(ethClient);
 
 
-void blinkLED(int times=1, int wait=200) {
+void blinkLED(const int *led_pin, int times=1, int pause=200) {
   for (int bl = 0; bl < times; bl++) {
-    digitalWrite(external_led_pin, HIGH);
-    delay(wait);
-    digitalWrite(external_led_pin, LOW);
+    digitalWrite(*led_pin, HIGH);
+    delay(pause);
+    digitalWrite(*led_pin, LOW);
     if (times > 1 and bl != times-1) {
-      delay(wait);
+      delay(pause);
     }
   }
 }
@@ -48,7 +36,7 @@ void blinkLED(int times=1, int wait=200) {
 
 void resetBoard(bool feedback=false) {
   if (feedback == true) {
-    blinkLED(10, 50);
+    blinkLED(&ext_led_pin, 10, 50);
   }
   Serial.println();
   Serial.println("Resetting board");
@@ -58,44 +46,21 @@ void resetBoard(bool feedback=false) {
 }
 
 
-void setup() {
-  Serial.begin(9600);
-
-  // wait for serial port to connect. Needed for native USB port only
-  while (!Serial) {
-    ;
-  }
-
-  // set LED pin
-  pinMode(external_led_pin, OUTPUT);
-
-  // print start message
-  delay(2000);
-  Serial.println("---------------------");
-  Serial.println();
-  Serial.println("Starting ...");
-  blinkLED(1, 1000);
-  Serial.println();
-  
-  // set server for MQTT client
-  client.setServer(mqtt_server, mqtt_port);
-
-  // start ethernet
-  Serial.println("Waiting for network:");
+void startEth(byte* mac, IPAddress fallback_ip) {
+  //Serial.println("Waiting for network:");
   if (Ethernet.begin(mac) == 0) {
-    Serial.println("Failed to configure Ethernet using DHCP");
+    //Serial.println("Failed to configure Ethernet using DHCP");
     // try to configure using IP address instead of DHCP:
     Ethernet.begin(mac, fallback_ip);
-    delay(1500);
-    blinkLED(5, 50);
+    delay(1500);   // give the Ethernet shield some time to initialize
+    blinkLED(&ext_led_pin, 5, 50);
   } else {
-    delay(1500);
-    blinkLED();
+    delay(1500);  // give the Ethernet shield some time to initialize
+    blinkLED(&ext_led_pin);
   }
-  // give the Ethernet shield some time to initialize
 
   // print network info
-  Serial.print("MAC address: ");
+  //Serial.print("MAC address: ");
   for (byte thisByte = 0; thisByte < 6; thisByte++) {
     if (mac[thisByte] < 0x10) {
       Serial.print("0");
@@ -107,7 +72,7 @@ void setup() {
       Serial.println();
     }
   }
-  Serial.print("IP address: ");
+  //Serial.print("IP address: ");
   for (byte thisByte = 0; thisByte < 4; thisByte++) {
     Serial.print(Ethernet.localIP()[thisByte], DEC);
     if (thisByte < 3) {
@@ -119,49 +84,48 @@ void setup() {
       Serial.println();
     }
   }
-  Serial.println();
+}
 
-  // start UDP and set local time
-  Serial.println("Waiting for NTP sync ...");
+
+void setNtpTime(const char* timeServer, unsigned int localPort, int timeZone) {
+  //Serial.println("Waiting for NTP sync ...");
   Udp.begin(localPort);
   // give some time to initialize:
   delay(1000);
   //setSyncProvider(getNtpTime);
-  time_t ntp_time = getNtpTime();
+  time_t ntp_time = getNtpTime(timeServer, timeZone);
   if (ntp_time > 0) {
     setTime(ntp_time);
-    Serial.println("Success: " + dateTimeISO8601());
-    blinkLED();
+    Serial.println(dateTimeISO8601());
+    blinkLED(&ext_led_pin);
   } else {
-    Serial.println("Sync with NTP server failed");
-    blinkLED(5, 50);
+    //Serial.println("Sync with NTP server failed");
+    blinkLED(&ext_led_pin, 5, 50);
     resetBoard();
   }
   delay(500);
-  Serial.println();
-
-  // start MQTT client
-  Serial.println("Waiting for MQTT connection ...");
-  delay(1500);
-  if (client.connect(client_name, user, pw)) {
-    Serial.println("Connected to MQTT broker");
-    blinkLED();
-  } else {
-    Serial.println("Connection to MQTT broker failed");
-    blinkLED(5, 50);
-    resetBoard();
-  }
-  Serial.println();
-
-  // print final info
-  Serial.println("Waiting for first calibration ...");
 }
 
+void startMqtt(const char* mqtt_server, const int mqtt_port, const char* user, const char* pw, const char* client_name) {
+  //Serial.println("Waiting for MQTT connection ...");
+  // set server for MQTT client
+  client.setServer(mqtt_server, mqtt_port);
+  delay(1500);
+  if (client.connect(client_name, user, pw)) {
+    //Serial.println("Connected to MQTT broker");
+    blinkLED(&ext_led_pin);
+  } else {
+    //Serial.println("Connection to MQTT broker failed");
+    blinkLED(&ext_led_pin, 5, 50);
+    resetBoard();
+  }
+}
 
 
 String dateTimeISO8601() {
   return String(year()) + "-" + addZero(month()) + "-" + addZero(day()) + "T" + addZero(hour()) + ":" + addZero(minute()) + ":" + addZero(second()) + "Z+1";
 }
+
 
 String addZero(int digits) {
   if(digits < 10) {
@@ -172,12 +136,10 @@ String addZero(int digits) {
 }
 
 
-
-
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message
 byte packetBuffer[NTP_PACKET_SIZE]; //buffer to hold incoming & outgoing packets
 
-time_t getNtpTime() {
+time_t getNtpTime(const char* timeServer, int timeZone) {
   while (Udp.parsePacket() > 0) ; // discard any previously received packets
   //Serial.println("Transmit NTP Request");
   sendNTPpacket(timeServer);
@@ -200,8 +162,9 @@ time_t getNtpTime() {
   return 0; // return 0 if unable to get the time
 }
 
+
 // send an NTP request to the time server at the given address
-void sendNTPpacket(char* address) {
+void sendNTPpacket(const char* address) {
   // set all bytes in the buffer to 0
   memset(packetBuffer, 0, NTP_PACKET_SIZE);
   // Initialize values needed to form NTP request
@@ -223,6 +186,42 @@ void sendNTPpacket(char* address) {
 }
 
 
+void setup() {
+  Serial.begin(9600);
+
+  // wait for serial port to connect. Needed for native USB port only
+  while (!Serial) {
+    ;
+  }
+
+  // set LED pin
+  pinMode(ext_led_pin, OUTPUT);
+
+  // print start message
+  delay(2000);
+  Serial.println(F("---------------------"));
+  Serial.println();
+  Serial.println(F("Starting ..."));
+  blinkLED(&ext_led_pin, 1, 1000);
+  Serial.println();
+
+  // start ethernet
+  byte mac[] = { 0x08, 0x00, 0x15, 0xBC, 0xD7, 0x4B };
+  IPAddress fallback_ip(192, 168, 188, 178);
+  startEth(mac, fallback_ip);
+  Serial.println();
+
+  // start UDP and set local time
+  setNtpTime("time.nist.gov", 8888, 1);
+  Serial.println();
+
+  // start MQTT client
+  startMqtt("fgseitsrancher.wifa.intern.uni-leipzig.de", 1883, "sepl", "sepl", "ferraris_arduino_001");
+  Serial.println();
+
+  // print final info
+  Serial.println(F("Waiting for first calibration ..."));
+}
 
 
 
@@ -241,7 +240,7 @@ long last_loop = 0;
 long lowest = 0;
 
 void loop() {
-  int reading = analogRead(sensor_pin);
+  int reading = analogRead(sen_pin);
   /*if (lowest == 0) {
     lowest = reading;
   }
@@ -258,8 +257,8 @@ void loop() {
       if (detection_threshold_count == detection_threshold) {
         if (detected == false) {
           detected = true;
-          Serial.println("Detected = true");
-          //digitalWrite(external_led_pin, HIGH);
+          Serial.println(F("Detected = true"));
+          //digitalWrite(ext_led_pin, HIGH);
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             //Serial.println(payload_str.c_str());
@@ -271,8 +270,8 @@ void loop() {
       detection_threshold_count = 1;
       if (detected == true) {
         detected = false;
-        Serial.println("Detected = false");
-        //digitalWrite(external_led_pin, LOW);
+        Serial.println(F("Detected = false"));
+        //digitalWrite(ext_led_pin, LOW);
       }
     }
   }
@@ -289,9 +288,10 @@ void loop() {
     iteration = 1;
     if (calibrated == false) {
       calibrated = true;
-      blinkLED();
+      blinkLED(&ext_led_pin);
     }
-    Serial.println("Calibrated with average: " + String(current_avg));
+    Serial.println(F("Calibrated with average: "));
+    Serial.print(String(current_avg));
   }
   tmp_avg = average;
   iteration++;
@@ -301,11 +301,11 @@ void loop() {
     if (now - last_loop > 5000) {
       last_loop = now;
       client.loop();
-      blinkLED(1, 0);
+      blinkLED(&ext_led_pin, 1, 0);
     }
   } else {
     Serial.println();
-    Serial.println("MQTT connection lost");
+    Serial.println(F("MQTT connection lost"));
     resetBoard(true);
   }
   delay(7);
