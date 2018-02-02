@@ -240,7 +240,6 @@ long iteration = 1;
 int new_avg_threshold_count = 1;
 bool calibrated = false;
 int detection_threshold_count = 1;
-int Ws_per_revolution = 3600000 / revolutions_per_kWh;
 long last_loop = 0;
 
 long lowest = 0;
@@ -257,7 +256,7 @@ void loop() {
           detected = true;
           Serial.println(F("Detected = true"));
           if (client.connected()) {
-            String payload_str = "{\"value\":" + String(Ws_per_revolution) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
+            String payload_str = "{\"value\":" + String(3600000 / revolutions_per_kWh) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             Serial.println(payload_str.c_str());
             client.publish(topic, payload_str.c_str());
           }
@@ -291,11 +290,11 @@ void loop() {
   }
   tmp_avg = average;
   iteration++;
-  Ethernet.maintain();
   if (client.connected()) {
-    long now = millis();
-    if (now - last_loop > 5000) {
-      last_loop = now;
+    long current_ms = millis();
+    if (current_ms - last_loop > 5000) {
+      last_loop = current_ms;
+      Ethernet.maintain();
       client.loop();
       blinkLED(&ext_led_pin, 1, 0);
     }
