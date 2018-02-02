@@ -6,7 +6,7 @@
 #include <SoftwareReset.h>
 
 const int sen_pin = A0;
-const int led_pin = 6;
+const int ir_pin = 6;
 const int ext_led_pin = 3;
 
 const int new_avg_threshold = 4000;
@@ -179,12 +179,12 @@ void sendNTPpacket(const char* address, const int* NTP_PACKET_SIZE, byte* packet
 }
 
 
-int denoisedRead(const int *sen_pin, const int *led_pin, int pause=2000) {
+int denoisedRead(const int *sen_pin, const int *ir_pin, int pause=2000) {
   int reading_ir, reading_no_ir;
-  digitalWrite(*led_pin, HIGH);
+  digitalWrite(*ir_pin, HIGH);
   delayMicroseconds(pause);
   reading_ir = 1023 - analogRead(*sen_pin);
-  digitalWrite(*led_pin, LOW);
+  digitalWrite(*ir_pin, LOW);
   delayMicroseconds(pause);
   reading_no_ir = 1023 - analogRead(*sen_pin);
   // debug line
@@ -201,8 +201,8 @@ void setup() {
     ;
   }
 
-  // set LED pin
-  pinMode(led_pin, OUTPUT);
+  // set pins
+  pinMode(ir_pin, OUTPUT);
   pinMode(ext_led_pin, OUTPUT);
 
   // print start message
@@ -245,7 +245,7 @@ long last_loop = 0;
 long lowest = 0;
 
 void loop() {
-  int reading = denoisedRead(&sen_pin, &led_pin, 1800);
+  int reading = denoisedRead(&sen_pin, &ir_pin, 1800);
   if (calibrated == true) {
     if (reading < (current_avg - lower_limit_distance)) {
       if (detection_threshold_count <= detection_threshold) {
