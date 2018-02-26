@@ -14,7 +14,7 @@ const int detection_threshold = 100;
 const int lower_limit_distance = 7;
 const int revolutions_per_kWh = 375;
 
-const char topic[] = "ferraris_arduino_001/consumption";
+const char topic* = "ferraris_arduino_001/consumption";
 
 
 EthernetClient ethClient;
@@ -220,7 +220,7 @@ void setup() {
   Serial.println();
 
   // start UDP and set local time
-  setNtpTime("time.nist.gov", 8888, 1);
+  setNtpTime("de.pool.ntp.org", 8888, 1);
   Serial.println();
 
   // start MQTT client
