@@ -14,7 +14,8 @@ const int detection_threshold = 100;
 const int lower_limit_distance = 7;
 const int revolutions_per_kWh = 375;
 
-const char topic* = "ferraris_arduino_001/consumption";
+const char id[] = "ferraris_arduino_001";
+const char mqtt_topic[] = "/consumption";
 
 
 EthernetClient ethClient;
@@ -192,6 +193,7 @@ int denoisedRead(const int *sen_pin, const int *ir_pin, int pause=2000) {
   return reading_ir - reading_no_ir;
 }
 
+String mqtt_full_path;
 
 void setup() {
   Serial.begin(9600);
@@ -224,7 +226,8 @@ void setup() {
   Serial.println();
 
   // start MQTT client
-  startMqtt("fgseitsrancher.wifa.intern.uni-leipzig.de", 1883, "sepl", "sepl", "ferraris_arduino_001");
+  mqtt_full_path = String(id) + String(mqtt_topic);
+  startMqtt("fgseitsrancher.wifa.intern.uni-leipzig.de", 1883, "sepl", "sepl", id);
   Serial.println();
 
   // print final info
@@ -258,7 +261,7 @@ void loop() {
           if (client.connected()) {
             String payload_str = "{\"value\":" + String(3600000 / revolutions_per_kWh) + ",\"unit\":\"Ws\",\"time\":\"" + dateTimeISO8601() + "\"}";
             Serial.println(payload_str.c_str());
-            client.publish(topic, payload_str.c_str());
+            client.publish(mqtt_full_path.c_str(), payload_str.c_str());
           }
         }
       }
