@@ -222,7 +222,6 @@ bool calibrated = false;
 int detection_threshold_count = 1;
 long last_loop = 0;
 
-long lowest = 0;
 
 void loop() {
   int reading = denoisedRead(&sen_pin, &ir_pin, 1800);
