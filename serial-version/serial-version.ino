@@ -1,10 +1,48 @@
 const int sen_pin = A0;
-const int ir_pin = 6;
-const int ext_led_pin = 3;
+const int ir_pin = 11;
+const int ext_led_pin = 10;
+const int dip_pwr_pin = 9;
+
+struct pdcm {
+  int pin;
+  char* code_on;
+  char* code_off;
+};
+
+const pdcm dip_pins[] = {
+  {7, "A", "E"},
+  {6, "B", "F"},
+  {5, "C", "G"},
+  {4, "D", "H"}
+};
 
 int new_avg_threshold = 4000;
 int detection_threshold = 100;
 int lower_limit_distance = 7;
+
+
+void setupDipPins(const pdcm *pins, int arr_size) {
+  for (int i = 0; i < arr_size / sizeof(pdcm); i++) {
+    pinMode(pins[i].pin, INPUT);
+  }
+}
+
+
+String readDips(const int *pwr, pdcm *pins, int arr_size) {
+  digitalWrite(*pwr, HIGH);
+  delay(10);
+  String code = "";
+  for (int i = 0; i < arr_size / sizeof(pdcm); i++) {
+     int state = digitalRead(pins[i].pin);
+     if (state == 1) {
+        code += pins[i].code_on;
+     } else {
+        code += pins[i].code_off;
+     }
+  }
+  digitalWrite(*pwr, LOW);
+  return code;
+}
 
 
 void blinkLED(const int *led_pin, int times=1, int pause=200) {
@@ -60,6 +98,7 @@ String readLine(int timeout = 3000) {
   }
 }
 
+String hw_id = "";
 
 void setup() {
   Serial.begin(9600);
@@ -71,9 +110,12 @@ void setup() {
   // set pins
   pinMode(ir_pin, OUTPUT);
   pinMode(ext_led_pin, OUTPUT);
+  pinMode(dip_pwr_pin, OUTPUT);
+  setupDipPins(dip_pins, sizeof(dip_pins));
 
   // print start message
   delay(2000);
+  hw_id = readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
   Serial.println(F("RDY"));
 }
 
@@ -97,6 +139,12 @@ void getCommand() {
 
 void loop() {
   getCommand();
+
+  if (command == "ID") {
+    Serial.println(hw_id);
+    command = "";
+    Serial.println(F("RDY"));
+  }
   
   if (command == "CONF") {
     Serial.println(F("NAT:DT:LLD"));
