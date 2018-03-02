@@ -16,9 +16,9 @@ const pdcm dip_pins[] = {
   {4, "D", "H"}
 };
 
-int new_avg_threshold = 4000;
-int detection_threshold = 100;
-int lower_limit_distance = 7;
+int new_avg_threshold = 0;
+int detection_threshold = 0;
+int lower_limit_distance = 0;
 
 
 void setupDipPins(const pdcm *pins, int arr_size) {
