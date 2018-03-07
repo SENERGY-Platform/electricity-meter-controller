@@ -176,7 +176,7 @@ void loop() {
   if (command == "MR") {
     while (command != "STP") {
       getCommand();
-      Serial.println(analogRead(A0));
+      Serial.println(denoisedRead(&sen_pin, &ir_pin, 1800));
       delay(100);
     }
     Serial.println(F("RDY"));
@@ -218,6 +218,8 @@ void loop() {
           calibrated = true;
           blinkLED(&ext_led_pin);
         }
+        Serial.print(F("AVG:"));
+        Serial.println(String(current_avg));
       }
       tmp_avg = average;
       iteration++;
