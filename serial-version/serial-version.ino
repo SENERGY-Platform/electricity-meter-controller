@@ -116,28 +116,32 @@ void setup() {
   // print start message
   delay(2000);
   hw_id = readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
+  blinkLED(&ext_led_pin, 1, 1000);
+  delay(500);
   Serial.println(F("RDY"));
 }
 
 
-bool detected = false;
-long reading_sum = 0;
-long current_avg = 0;
-long tmp_avg = 0;
-long iteration = 1;
-int new_avg_threshold_count = 1;
-bool calibrated = false;
-int detection_threshold_count = 1;
 String command = "";
 
 void getCommand() {
   String line = readLine();
   if (line != "") {
     command = line;
+    blinkLED(&ext_led_pin);
   }
 }
 
 void loop() {
+  bool detected = false;
+  long reading_sum = 0;
+  long current_avg = 0;
+  long tmp_avg = 0;
+  long iteration = 1;
+  long new_avg_threshold_count = 1;
+  bool calibrated = false;
+  long detection_threshold_count = 1;
+  long last_loop = 0;
   getCommand();
 
   if (command == "ID") {
@@ -200,6 +204,7 @@ void loop() {
           detection_threshold_count = 1;
           if (detected == true) {
             detected = false;
+            blinkLED(&ext_led_pin);
           }
         }
       }
@@ -216,7 +221,6 @@ void loop() {
         iteration = 1;
         if (calibrated == false) {
           calibrated = true;
-          blinkLED(&ext_led_pin);
         }
         Serial.print(F("AVG:"));
         Serial.println(String(current_avg));
@@ -225,6 +229,11 @@ void loop() {
       iteration++;
       delay(1);
       getCommand();
+      long current_ms = millis();
+      if (current_ms - last_loop > 5000) {
+        last_loop = current_ms;
+        blinkLED(&ext_led_pin, 1, 0);
+      }
     }
     Serial.println(F("RDY"));
   }
