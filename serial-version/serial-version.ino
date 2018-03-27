@@ -57,7 +57,7 @@ void blinkLED(const int *led_pin, int times=1, int pause=200) {
 }
 
 
-int denoisedRead(const int *sen_pin, const int *ir_pin, int pause=2000) {
+int denoisedRead(const int *sen_pin, const int *ir_pin, int pause=1800) {
   int reading_ir, reading_no_ir;
   digitalWrite(*ir_pin, HIGH);
   delayMicroseconds(pause);
@@ -180,15 +180,15 @@ void loop() {
   if (command == "MR") {
     while (command != "STP") {
       getCommand();
-      Serial.println(denoisedRead(&sen_pin, &ir_pin, 1800));
-      delay(100);
+      Serial.println(denoisedRead(&sen_pin, &ir_pin));
+      delay(50);
     }
     Serial.println(F("RDY"));
   }
   
   if (command == "STRT") {
     while (command != "STP") {
-      int reading = denoisedRead(&sen_pin, &ir_pin, 1800);
+      int reading = denoisedRead(&sen_pin, &ir_pin);
       if (calibrated == true) {
         if (reading < (current_avg - lower_limit_distance)) {
           if (detection_threshold_count <= detection_threshold) {
