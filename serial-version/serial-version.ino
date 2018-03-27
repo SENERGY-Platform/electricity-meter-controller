@@ -61,10 +61,10 @@ int denoisedRead(const int *sen_pin, const int *ir_pin, int pause=2000) {
   int reading_ir, reading_no_ir;
   digitalWrite(*ir_pin, HIGH);
   delayMicroseconds(pause);
-  reading_ir = 1023 - analogRead(*sen_pin);
+  reading_ir = analogRead(*sen_pin);
   digitalWrite(*ir_pin, LOW);
   delayMicroseconds(pause);
-  reading_no_ir = 1023 - analogRead(*sen_pin);
+  reading_no_ir = analogRead(*sen_pin);
   // debug line
   //Serial.print(String(reading_ir) + " - " + String(reading_no_ir) + " = ");
   return reading_ir - reading_no_ir;
