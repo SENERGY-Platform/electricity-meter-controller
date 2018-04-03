@@ -163,10 +163,10 @@
 <wire x1="-0.5" y1="-3" x2="-0.5" y2="-2.8" width="0.127" layer="21"/>
 <wire x1="-0.5" y1="-2.8" x2="0.5" y2="-2.8" width="0.127" layer="21"/>
 <wire x1="0.5" y1="-2.8" x2="0.5" y2="-3" width="0.127" layer="21"/>
-<pad name="E" x="1.4" y="1.4" drill="0.5" shape="square"/>
-<pad name="A" x="-1.4" y="1.4" drill="0.5" shape="square"/>
-<pad name="CATH" x="-1.4" y="-1.4" drill="0.5" shape="square"/>
-<pad name="COLL" x="1.4" y="-1.4" drill="0.5" shape="square"/>
+<pad name="E" x="1.4" y="1.4" drill="0.7"/>
+<pad name="A" x="-1.4" y="1.4" drill="0.7" shape="square"/>
+<pad name="CATH" x="-1.4" y="-1.4" drill="0.7"/>
+<pad name="COLL" x="1.4" y="-1.4" drill="0.7"/>
 </package>
 </packages>
 <symbols>
@@ -287,10 +287,10 @@
 <parts>
 <part name="U$1" library="ferraris_sensor_project" deviceset="CNY70" device=""/>
 <part name="U$2" library="ferraris_sensor_project" deviceset="CNY70" device=""/>
-<part name="A(5V)" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
-<part name="CATH(GND)" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
-<part name="COLL(5V)" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
-<part name="E(SIG+GND)" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="1" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="4" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="3" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
 </parts>
 <sheets>
 <sheet>
@@ -299,10 +299,10 @@
 <instances>
 <instance part="U$1" gate="G$1" x="60.96" y="58.42"/>
 <instance part="U$2" gate="G$1" x="81.28" y="58.42" rot="R180"/>
-<instance part="A(5V)" gate="1" x="68.58" y="71.12"/>
-<instance part="CATH(GND)" gate="1" x="73.66" y="30.48" rot="R180"/>
-<instance part="COLL(5V)" gate="1" x="55.88" y="48.26"/>
-<instance part="E(SIG+GND)" gate="1" x="55.88" y="40.64"/>
+<instance part="1" gate="1" x="68.58" y="71.12"/>
+<instance part="2" gate="1" x="73.66" y="30.48" rot="R180"/>
+<instance part="4" gate="1" x="55.88" y="48.26"/>
+<instance part="3" gate="1" x="55.88" y="40.64"/>
 </instances>
 <busses>
 </busses>
@@ -321,7 +321,7 @@
 <wire x1="91.44" y1="59.92" x2="91.44" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="91.44" y1="35.56" x2="71.12" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="35.56" x2="50.8" y2="35.56" width="0.1524" layer="91"/>
-<pinref part="CATH(GND)" gate="1" pin="P"/>
+<pinref part="2" gate="1" pin="P"/>
 <wire x1="71.12" y1="30.48" x2="71.12" y2="35.56" width="0.1524" layer="91"/>
 <junction x="71.12" y="35.56"/>
 <pinref part="U$1" gate="G$1" pin="GND(DIG)"/>
@@ -332,7 +332,7 @@
 <net name="COLL(5V)" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="5V(PWR)"/>
-<pinref part="COLL(5V)" gate="1" pin="P"/>
+<pinref part="4" gate="1" pin="P"/>
 <wire x1="67.46" y1="56.92" x2="67.46" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="67.46" y1="48.26" x2="58.42" y2="48.26" width="0.1524" layer="91"/>
 </segment>
@@ -340,14 +340,14 @@
 <net name="E(SIG+GND)" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND(PWR)"/>
-<pinref part="E(SIG+GND)" gate="1" pin="P"/>
+<pinref part="3" gate="1" pin="P"/>
 <wire x1="74.78" y1="56.92" x2="74.78" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="74.78" y1="40.64" x2="58.42" y2="40.64" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="A(5V)" class="0">
 <segment>
-<pinref part="A(5V)" gate="1" pin="P"/>
+<pinref part="1" gate="1" pin="P"/>
 <wire x1="71.12" y1="71.12" x2="71.12" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="66.04" x2="93.98" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="U$2" gate="G$1" pin="5V(DIG)"/>
