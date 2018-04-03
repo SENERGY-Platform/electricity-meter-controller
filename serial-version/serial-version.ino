@@ -1,7 +1,8 @@
-const int sen_pin = A0;
-const int ir_pin = 11;
-const int ext_led_pin = 10;
-const int dip_pwr_pin = 9;
+const int signal_pin = A0;
+const int ir_pwr_pin = 10;
+const int tr_pwr_pin = 9;
+const int led_pwr_pin = 11;
+const int dip_pwr_pin = 6;
 
 struct pdcm {
   int pin;
@@ -10,10 +11,11 @@ struct pdcm {
 };
 
 const pdcm dip_pins[] = {
-  {7, "A", "E"},
-  {6, "B", "F"},
-  {5, "C", "G"},
-  {4, "D", "H"}
+  {13, "A", "F"},
+  {12, "B", "G"},
+  {8, "C", "H"},
+  {7, "D", "I"}//,
+  //{5, "E", "J"}
 };
 
 int new_avg_threshold = 0;
@@ -57,14 +59,14 @@ void blinkLED(const int *led_pin, int times=1, int pause=200) {
 }
 
 
-int denoisedRead(const int *sen_pin, const int *ir_pin, int pause=1800) {
+int denoisedRead(const int *signal_pin, const int *ir_pwr_pin, int pause=1800) {
   int reading_ir, reading_no_ir;
-  digitalWrite(*ir_pin, HIGH);
+  digitalWrite(*ir_pwr_pin, HIGH);
   delayMicroseconds(pause);
-  reading_ir = analogRead(*sen_pin);
-  digitalWrite(*ir_pin, LOW);
+  reading_ir = analogRead(*signal_pin);
+  digitalWrite(*ir_pwr_pin, LOW);
   delayMicroseconds(pause);
-  reading_no_ir = analogRead(*sen_pin);
+  reading_no_ir = analogRead(*signal_pin);
   // debug line
   //Serial.print(String(reading_ir) + " - " + String(reading_no_ir) + " = ");
   return reading_ir - reading_no_ir;
@@ -108,15 +110,16 @@ void setup() {
   }
 
   // set pins
-  pinMode(ir_pin, OUTPUT);
-  pinMode(ext_led_pin, OUTPUT);
+  pinMode(ir_pwr_pin, OUTPUT);
+  pinMode(led_pwr_pin, OUTPUT);
   pinMode(dip_pwr_pin, OUTPUT);
+  pinMode(tr_pwr_pin, OUTPUT);
   setupDipPins(dip_pins, sizeof(dip_pins));
 
   // print start message
   delay(2000);
   hw_id = readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
-  blinkLED(&ext_led_pin, 1, 1000);
+  blinkLED(&led_pwr_pin, 1, 1000);
   delay(500);
   Serial.println(F("RDY"));
 }
@@ -128,7 +131,7 @@ void getCommand() {
   String line = readLine();
   if (line != "") {
     command = line;
-    blinkLED(&ext_led_pin);
+    blinkLED(&led_pwr_pin);
   }
 }
 
@@ -178,17 +181,20 @@ void loop() {
   }
   
   if (command == "MR") {
+    digitalWrite(tr_pwr_pin, HIGH);
     while (command != "STP") {
       getCommand();
-      Serial.println(denoisedRead(&sen_pin, &ir_pin));
+      Serial.println(denoisedRead(&signal_pin, &ir_pwr_pin));
       delay(50);
     }
+    digitalWrite(tr_pwr_pin, LOW);
     Serial.println(F("RDY"));
   }
   
   if (command == "STRT") {
+    digitalWrite(tr_pwr_pin, HIGH);
     while (command != "STP") {
-      int reading = denoisedRead(&sen_pin, &ir_pin);
+      int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
       if (calibrated == true) {
         if (reading < (current_avg - lower_limit_distance)) {
           if (detection_threshold_count <= detection_threshold) {
@@ -204,7 +210,7 @@ void loop() {
           detection_threshold_count = 1;
           if (detected == true) {
             detected = false;
-            blinkLED(&ext_led_pin);
+            blinkLED(&led_pwr_pin);
           }
         }
       }
@@ -232,9 +238,10 @@ void loop() {
       long current_ms = millis();
       if (current_ms - last_loop > 5000) {
         last_loop = current_ms;
-        blinkLED(&ext_led_pin, 1, 0);
+        blinkLED(&led_pwr_pin, 1, 0);
       }
     }
+    digitalWrite(tr_pwr_pin, LOW);
     Serial.println(F("RDY"));
   }
   delay(10);
