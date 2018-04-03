@@ -14,8 +14,8 @@ const pdcm dip_pins[] = {
   {13, "A", "F"},
   {12, "B", "G"},
   {8, "C", "H"},
-  {7, "D", "I"}//,
-  //{5, "E", "J"}
+  {7, "D", "I"},
+  {5, "E", "J"}
 };
 
 int new_avg_threshold = 0;
