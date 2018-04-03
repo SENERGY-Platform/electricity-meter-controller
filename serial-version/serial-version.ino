@@ -145,6 +145,7 @@ void loop() {
   bool calibrated = false;
   long detection_threshold_count = 1;
   long last_loop = 0;
+  long last_detection = 0;
   getCommand();
 
   if (command == "ID") {
@@ -195,6 +196,7 @@ void loop() {
     digitalWrite(tr_pwr_pin, HIGH);
     while (command != "STP") {
       int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+      long current_ms = millis();
       if (calibrated == true) {
         if (reading < (current_avg - lower_limit_distance)) {
           if (detection_threshold_count <= detection_threshold) {
@@ -203,7 +205,10 @@ void loop() {
           if (detection_threshold_count == detection_threshold) {
             if (detected == false) {
               detected = true;
-              Serial.println(F("DET"));
+              if (current_ms - last_detection > 1500) {
+                last_detection = current_ms;
+                Serial.println(F("DET"));
+              }
             }
           }
         } else {
@@ -235,7 +240,6 @@ void loop() {
       iteration++;
       delay(1);
       getCommand();
-      long current_ms = millis();
       if (current_ms - last_loop > 5000) {
         last_loop = current_ms;
         blinkLED(&led_pwr_pin, 1, 0);
