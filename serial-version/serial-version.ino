@@ -205,7 +205,7 @@ void loop() {
           if (detection_threshold_count == detection_threshold) {
             if (detected == false) {
               detected = true;
-              if (current_ms - last_detection > 1500) {
+              if (current_ms - last_detection > 2000) {
                 last_detection = current_ms;
                 Serial.println(F("DET"));
               }
