@@ -314,7 +314,7 @@
 <wire x1="67.46" y1="59.92" x2="74.78" y2="59.92" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="CATH(GND)" class="0">
+<net name="GND_D" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND(DIG)"/>
 <wire x1="87.78" y1="59.92" x2="91.44" y2="59.92" width="0.1524" layer="91"/>
@@ -327,25 +327,28 @@
 <pinref part="U$1" gate="G$1" pin="GND(DIG)"/>
 <wire x1="50.8" y1="35.56" x2="50.8" y2="56.92" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="56.92" x2="54.46" y2="56.92" width="0.1524" layer="91"/>
+<label x="71.12" y="33.02" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="COLL(5V)" class="0">
+<net name="TR_PWR" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="5V(PWR)"/>
 <pinref part="4" gate="1" pin="P"/>
 <wire x1="67.46" y1="56.92" x2="67.46" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="67.46" y1="48.26" x2="58.42" y2="48.26" width="0.1524" layer="91"/>
+<label x="58.42" y="45.72" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="E(SIG+GND)" class="0">
+<net name="GND_A" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND(PWR)"/>
 <pinref part="3" gate="1" pin="P"/>
 <wire x1="74.78" y1="56.92" x2="74.78" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="74.78" y1="40.64" x2="58.42" y2="40.64" width="0.1524" layer="91"/>
+<label x="58.42" y="40.64" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="A(5V)" class="0">
+<net name="IR_PWR" class="0">
 <segment>
 <pinref part="1" gate="1" pin="P"/>
 <wire x1="71.12" y1="71.12" x2="71.12" y2="66.04" width="0.1524" layer="91"/>
@@ -358,6 +361,7 @@
 <pinref part="U$1" gate="G$1" pin="5V(DIG)"/>
 <wire x1="50.8" y1="66.04" x2="50.8" y2="59.92" width="0.1524" layer="91"/>
 <wire x1="50.8" y1="59.92" x2="54.46" y2="59.92" width="0.1524" layer="91"/>
+<label x="71.12" y="68.58" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
