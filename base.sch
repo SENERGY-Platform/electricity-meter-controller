@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.0">
+<eagle version="8.7.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -7131,14 +7131,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="IR_PWR" class="0">
 <segment>
-<pinref part="J1" gate="G$1" pin="3"/>
-<wire x1="-7.62" y1="12.7" x2="-5.08" y2="12.7" width="0.1524" layer="91"/>
-<label x="-5.08" y="12.7" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="R3.39" gate="G$1" pin="1"/>
 <wire x1="-7.62" y1="40.64" x2="0" y2="40.64" width="0.1524" layer="91"/>
 <label x="-12.7" y="38.1" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="J2" gate="J$1" pin="2"/>
+<wire x1="-7.62" y1="-5.08" x2="-5.08" y2="-5.08" width="0.1524" layer="91"/>
+<label x="-5.08" y="-5.08" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="TR_PWR" class="0">
@@ -7156,11 +7156,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="DIP_3" class="0">
 <segment>
-<pinref part="J1" gate="G$1" pin="1"/>
-<wire x1="-7.62" y1="7.62" x2="-5.08" y2="7.62" width="0.1524" layer="91"/>
-<label x="-5.08" y="7.62" size="1.778" layer="95"/>
-</segment>
-<segment>
 <wire x1="55.88" y1="-15.24" x2="55.88" y2="-7.62" width="0.1524" layer="91"/>
 <pinref part="R7.680K" gate="G$1" pin="1"/>
 <wire x1="55.88" y1="-7.62" x2="55.88" y2="2.54" width="0.1524" layer="91"/>
@@ -7170,6 +7165,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="U$2" gate="G$1" pin="3_ON"/>
 <wire x1="56.34" y1="-20.86" x2="56.34" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="56.34" y1="-15.24" x2="55.88" y2="-15.24" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J2" gate="J$1" pin="1"/>
+<wire x1="-7.62" y1="-7.62" x2="-5.08" y2="-7.62" width="0.1524" layer="91"/>
+<label x="-5.08" y="-7.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="DIP_4" class="0">
@@ -7193,11 +7193,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 </net>
 <net name="DIP_PWR" class="0">
-<segment>
-<pinref part="J2" gate="J$1" pin="2"/>
-<wire x1="-7.62" y1="-5.08" x2="-5.08" y2="-5.08" width="0.1524" layer="91"/>
-<label x="-5.08" y="-5.08" size="1.778" layer="95"/>
-</segment>
 <segment>
 <wire x1="60.96" y1="-38.1" x2="58.42" y2="-38.1" width="0.1524" layer="91"/>
 <wire x1="58.42" y1="-38.1" x2="55.88" y2="-38.1" width="0.1524" layer="91"/>
@@ -7230,13 +7225,13 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="60.34" y1="-32.86" x2="60.34" y2="-35.56" width="0.1524" layer="91"/>
 <wire x1="60.34" y1="-35.56" x2="60.96" y2="-35.56" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="J1" gate="G$1" pin="3"/>
+<wire x1="-7.62" y1="12.7" x2="-5.08" y2="12.7" width="0.1524" layer="91"/>
+<label x="-5.08" y="12.7" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="DIP_5" class="0">
-<segment>
-<pinref part="J2" gate="J$1" pin="1"/>
-<wire x1="-7.62" y1="-7.62" x2="-5.08" y2="-7.62" width="0.1524" layer="91"/>
-<label x="-5.08" y="-7.62" size="1.778" layer="95"/>
-</segment>
 <segment>
 <wire x1="60.96" y1="-15.24" x2="60.96" y2="-2.54" width="0.1524" layer="91"/>
 <pinref part="R5.680K" gate="G$1" pin="1"/>
@@ -7249,6 +7244,11 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <pinref part="U$2" gate="G$1" pin="5_ON"/>
 <wire x1="60.34" y1="-20.86" x2="60.34" y2="-15.24" width="0.1524" layer="91"/>
 <wire x1="60.34" y1="-15.24" x2="60.96" y2="-15.24" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J1" gate="G$1" pin="1"/>
+<wire x1="-7.62" y1="7.62" x2="-5.08" y2="7.62" width="0.1524" layer="91"/>
+<label x="-5.08" y="7.62" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="GND_A" class="0">
