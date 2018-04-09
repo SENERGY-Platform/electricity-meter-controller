@@ -6392,14 +6392,22 @@ Also note, the SNAP packages are for using a snappable style connector. We sell 
 <text x="-0.5" y="-4.4" size="1.27" layer="21">1</text>
 <text x="9.7" y="-4.3" size="1.27" layer="21">5</text>
 </package>
-<package name="93PR10KLF">
-<pad name="2" x="0" y="0" drill="0.75"/>
-<pad name="3" x="-2.54" y="2.54" drill="0.75"/>
-<pad name="1" x="2.54" y="2.54" drill="0.75"/>
-<circle x="0" y="2.54" radius="6.302290625" width="0.127" layer="21"/>
-<wire x1="0" y1="1.24" x2="0" y2="3.44" width="0.127" layer="21"/>
-<wire x1="0" y1="3.44" x2="-0.33" y2="2.9" width="0.127" layer="21"/>
-<wire x1="0" y1="3.44" x2="0.36" y2="2.89" width="0.127" layer="21"/>
+<package name="CT6EP103">
+<pad name="2" x="0" y="2.5" drill="0.5"/>
+<pad name="3" x="-2.54" y="0.04" drill="0.5"/>
+<pad name="1" x="2.44" y="0.04" drill="0.5"/>
+<wire x1="2.5" y1="3.5" x2="3.5" y2="2.5" width="0.127" layer="21" curve="-53.130102"/>
+<wire x1="3.5" y1="-2.5" x2="2.5" y2="-3.5" width="0.127" layer="21" curve="-90"/>
+<wire x1="3.5" y1="2.5" x2="3.5" y2="-2.5" width="0.127" layer="21"/>
+<wire x1="-3.5" y1="2.5" x2="-2.5" y2="3.5" width="0.127" layer="21" curve="-53.130102"/>
+<wire x1="-2.5" y1="-3.5" x2="-3.5" y2="-2.5" width="0.127" layer="21" curve="-90"/>
+<wire x1="-3.5" y1="2.5" x2="-3.5" y2="-2.5" width="0.127" layer="21"/>
+<wire x1="-2.5" y1="3.5" x2="2.5" y2="3.5" width="0.127" layer="21"/>
+<wire x1="2.5" y1="-3.5" x2="-2.5" y2="-3.5" width="0.127" layer="21"/>
+<wire x1="0" y1="1.5" x2="0" y2="0" width="0.127" layer="21"/>
+<wire x1="0" y1="0" x2="0.5" y2="0.5" width="0.127" layer="21"/>
+<wire x1="0" y1="0" x2="-0.5" y2="0.5" width="0.127" layer="21"/>
+<wire x1="1.5" y1="0" x2="-1.5" y2="0" width="0.127" layer="21"/>
 </package>
 </packages>
 <symbols>
@@ -6434,14 +6442,14 @@ Also note, the SNAP packages are for using a snappable style connector. We sell 
 <rectangle x1="1.96" y1="-2.96" x2="2.96" y2="0.04" layer="94"/>
 <rectangle x1="3.96" y1="-2.96" x2="4.96" y2="0.04" layer="94"/>
 </symbol>
-<symbol name="93PR10KLF">
+<symbol name="CT6EP103">
 <wire x1="0" y1="0" x2="0" y2="5" width="0.254" layer="94"/>
 <wire x1="0" y1="5" x2="10" y2="5" width="0.254" layer="94"/>
 <wire x1="10" y1="5" x2="10" y2="0" width="0.254" layer="94"/>
 <wire x1="10" y1="0" x2="0" y2="0" width="0.254" layer="94"/>
 <pin name="P$1" x="-5.1" y="2.6" visible="pad" length="middle" direction="pwr"/>
-<pin name="P$2" x="15.1" y="2.6" visible="pad" length="middle" direction="pwr" rot="R180"/>
-<pin name="P$3" x="5" y="-5.3" visible="pad" length="middle" direction="pwr" rot="R90"/>
+<pin name="P$3" x="15.1" y="2.6" visible="pad" length="middle" direction="pwr" rot="R180"/>
+<pin name="P$2" x="5" y="-5.3" visible="pad" length="middle" direction="pwr" rot="R90"/>
 <wire x1="5" y1="-0.2" x2="4.5" y2="-0.8" width="0.254" layer="94"/>
 <wire x1="5" y1="-0.2" x2="5.5" y2="-0.8" width="0.254" layer="94"/>
 </symbol>
@@ -6489,16 +6497,16 @@ Also note, the SNAP packages are for using a snappable style connector. We sell 
 </device>
 </devices>
 </deviceset>
-<deviceset name="93PR10KLF">
+<deviceset name="CT6EP103">
 <gates>
-<gate name="G$1" symbol="93PR10KLF" x="-5.08" y="0"/>
+<gate name="G$1" symbol="CT6EP103" x="-5.08" y="0"/>
 </gates>
 <devices>
-<device name="" package="93PR10KLF">
+<device name="" package="CT6EP103">
 <connects>
 <connect gate="G$1" pin="P$1" pad="3"/>
-<connect gate="G$1" pin="P$2" pad="1"/>
-<connect gate="G$1" pin="P$3" pad="2"/>
+<connect gate="G$1" pin="P$2" pad="2"/>
+<connect gate="G$1" pin="P$3" pad="1"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -6979,7 +6987,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="X27" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="PAD-N" device=""/>
 <part name="U$1" library="ferraris_sensor_project" deviceset="DF1BZ-4DP-2.5DSA" device=""/>
 <part name="U$2" library="ferraris_sensor_project" deviceset="DIP-SW-CTS-208-5" device=""/>
-<part name="R1.10K" library="ferraris_sensor_project" deviceset="93PR10KLF" device=""/>
+<part name="U$3" library="ferraris_sensor_project" deviceset="CT6EP103" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -7027,7 +7035,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="X27" gate="G$1" x="-7.62" y="40.64"/>
 <instance part="U$1" gate="G$1" x="15.24" y="43.18" rot="R90"/>
 <instance part="U$2" gate="G$1" x="55.88" y="-25.4"/>
-<instance part="R1.10K" gate="G$1" x="35.56" y="43.18"/>
+<instance part="U$3" gate="G$1" x="35.56" y="43.18"/>
 </instances>
 <busses>
 </busses>
@@ -7277,8 +7285,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="18.24" y1="35.56" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
 <junction x="30.48" y="35.56"/>
 <pinref part="U$1" gate="G$1" pin="3"/>
-<pinref part="R1.10K" gate="G$1" pin="P$3"/>
 <wire x1="40.56" y1="37.88" x2="40.56" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="P$2"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -7291,10 +7299,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="N$1" class="0">
 <segment>
-<pinref part="R1.10K" gate="G$1" pin="P$2"/>
 <pinref part="R2.100" gate="G$1" pin="1"/>
 <wire x1="50.66" y1="45.78" x2="50.66" y2="43.18" width="0.1524" layer="91"/>
 <wire x1="50.66" y1="43.18" x2="53.34" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="U$3" gate="G$1" pin="P$3"/>
 </segment>
 </net>
 </nets>
