@@ -1,8 +1,8 @@
 const int signal_pin = A0;
-const int ir_pwr_pin = 10;
-const int tr_pwr_pin = 9;
+const int ir_pwr_pin = 6;
+const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-const int dip_pwr_pin = 6;
+const int dip_pwr_pin = 9;
 
 struct pdcm {
   int pin;
