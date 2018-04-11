@@ -6360,7 +6360,6 @@ Also note, the SNAP packages are for using a snappable style connector. We sell 
 <wire x1="-3" y1="3" x2="3" y2="3" width="0.127" layer="21"/>
 <wire x1="3" y1="3" x2="3" y2="-0.65" width="0.127" layer="21"/>
 <wire x1="3" y1="-1.85" x2="3" y2="-3" width="0.127" layer="21"/>
-<wire x1="3" y1="-3" x2="-3" y2="-3" width="0.127" layer="21"/>
 <wire x1="-3" y1="-3" x2="-3" y2="-1.85" width="0.127" layer="21"/>
 <wire x1="-3" y1="-0.65" x2="-3" y2="3" width="0.127" layer="21"/>
 <wire x1="-3" y1="-0.65" x2="-2.7" y2="-0.65" width="0.127" layer="21"/>
@@ -6369,10 +6368,17 @@ Also note, the SNAP packages are for using a snappable style connector. We sell 
 <wire x1="2.7" y1="-1.85" x2="3" y2="-1.85" width="0.127" layer="21"/>
 <wire x1="-2.7" y1="-0.65" x2="-2.7" y2="-1.85" width="0.127" layer="21"/>
 <wire x1="2.7" y1="-0.65" x2="2.7" y2="-1.85" width="0.127" layer="21"/>
-<text x="-6.35" y="2.54" size="1.27" layer="21">1</text>
-<text x="5.08" y="2.54" size="1.27" layer="21">2</text>
-<text x="-6.35" y="-2.54" size="1.27" layer="21">3</text>
-<text x="5.08" y="-2.54" size="1.27" layer="21">4</text>
+<text x="-5.08" y="1.27" size="1.27" layer="21">1</text>
+<text x="4.191" y="1.27" size="1.27" layer="21">2</text>
+<text x="-5.08" y="-2.54" size="1.27" layer="21">3</text>
+<text x="4.191" y="-2.54" size="1.27" layer="21">4</text>
+<wire x1="-0.635" y1="-2.794" x2="0.635" y2="-2.794" width="0.127" layer="21"/>
+<wire x1="0.635" y1="-2.794" x2="0.635" y2="-3.048" width="0.127" layer="21"/>
+<wire x1="-0.635" y1="-2.794" x2="-0.635" y2="-3.048" width="0.127" layer="21"/>
+<wire x1="-0.635" y1="-3.048" x2="-2.9972" y2="-3.048" width="0.127" layer="21"/>
+<wire x1="-2.9972" y1="-3.048" x2="-2.9972" y2="-2.794" width="0.127" layer="21"/>
+<wire x1="0.635" y1="-3.048" x2="2.9972" y2="-3.048" width="0.127" layer="21"/>
+<wire x1="2.9972" y1="-3.048" x2="2.9972" y2="-2.921" width="0.127" layer="21"/>
 </package>
 <package name="DIP-SW-CTS-208-5">
 <pad name="1_ON" x="0" y="0" drill="0.65"/>
@@ -6464,8 +6470,8 @@ Also note, the SNAP packages are for using a snappable style connector. We sell 
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
-<connect gate="G$1" pin="3" pad="4"/>
-<connect gate="G$1" pin="4" pad="3"/>
+<connect gate="G$1" pin="3" pad="3"/>
+<connect gate="G$1" pin="4" pad="4"/>
 </connects>
 <technologies>
 <technology name=""/>
@@ -7028,7 +7034,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="X20" gate="G$1" x="66.04" y="-38.1"/>
 <instance part="X21" gate="G$1" x="30.48" y="30.48"/>
 <instance part="X22" gate="G$1" x="68.58" y="43.18"/>
-<instance part="X23" gate="G$1" x="22.86" y="40.64"/>
+<instance part="X23" gate="G$1" x="22.86" y="27.94"/>
 <instance part="X24" gate="G$1" x="25.4" y="20.32"/>
 <instance part="X25" gate="G$1" x="60.96" y="20.32"/>
 <instance part="X26" gate="G$1" x="15.24" y="30.48"/>
@@ -7081,7 +7087,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </segment>
 <segment>
 <wire x1="15.24" y1="43.18" x2="15.24" y2="30.48" width="0.1524" layer="91"/>
-<label x="15.24" y="30.48" size="1.778" layer="95"/>
+<label x="5.08" y="30.48" size="1.778" layer="95"/>
 <pinref part="U$1" gate="G$1" pin="2"/>
 </segment>
 </net>
@@ -7151,15 +7157,16 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </net>
 <net name="TR_PWR" class="0">
 <segment>
-<wire x1="21.24" y1="43.18" x2="21.24" y2="40.64" width="0.1524" layer="91"/>
-<wire x1="21.24" y1="40.64" x2="22.86" y2="40.64" width="0.1524" layer="91"/>
-<label x="20.32" y="38.1" size="1.778" layer="95"/>
-<pinref part="U$1" gate="G$1" pin="4"/>
-</segment>
-<segment>
 <pinref part="J1" gate="G$1" pin="3"/>
 <wire x1="-7.62" y1="12.7" x2="-5.08" y2="12.7" width="0.1524" layer="91"/>
 <label x="-5.08" y="12.7" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="21.24" y1="27.94" x2="22.86" y2="27.94" width="0.1524" layer="91"/>
+<label x="22.86" y="25.4" size="1.778" layer="95"/>
+<pinref part="U$1" gate="G$1" pin="3"/>
+<wire x1="18.24" y1="43.18" x2="18.24" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="18.24" y1="27.94" x2="21.24" y2="27.94" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="DIP_3" class="0">
@@ -7281,12 +7288,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="40.56" y1="35.56" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="30.48" y1="30.48" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
 <label x="30.48" y="30.48" size="1.778" layer="95"/>
-<wire x1="18.24" y1="43.18" x2="18.24" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="18.24" y1="35.56" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
-<junction x="30.48" y="35.56"/>
-<pinref part="U$1" gate="G$1" pin="3"/>
 <wire x1="40.56" y1="37.88" x2="40.56" y2="35.56" width="0.1524" layer="91"/>
 <pinref part="U$3" gate="G$1" pin="P$2"/>
+<pinref part="U$1" gate="G$1" pin="4"/>
+<wire x1="21.24" y1="43.18" x2="21.24" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="21.24" y1="35.56" x2="30.48" y2="35.56" width="0.1524" layer="91"/>
+<junction x="30.48" y="35.56"/>
 </segment>
 </net>
 <net name="N$2" class="0">
