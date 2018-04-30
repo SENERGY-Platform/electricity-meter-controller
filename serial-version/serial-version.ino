@@ -14,9 +14,9 @@ struct pdcm {
 const pdcm dip_pins[] = {
   {13, "A", "F"},
   {12, "B", "G"},
-  {8, "C", "H"},
+  {5, "C", "H"},
   {7, "D", "I"},
-  {5, "E", "J"}
+  {8, "E", "J"}
 };
 
 int new_avg_threshold = 0;
