@@ -199,14 +199,14 @@ void loop() {
       int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
       long current_ms = millis();
       if (calibrated == true) {
-        if (reading < (current_avg - lower_limit_distance)) {
-          if (detection_threshold_count <= detection_threshold) {
+        if (reading <= (current_avg - lower_limit_distance)) {
+          if (detection_threshold_count < detection_threshold) {
             detection_threshold_count++;
           }
           if (detection_threshold_count == detection_threshold) {
             if (detected == false) {
               detected = true;
-              if (current_ms - last_detection > 2000) {
+              if (current_ms - last_detection > 5000) {
                 last_detection = current_ms;
                 Serial.println(F("DET"));
               }
@@ -233,6 +233,7 @@ void loop() {
         iteration = 1;
         if (calibrated == false) {
           calibrated = true;
+          Serial.println(F("CAL"));
         }
         Serial.print(F("AVG:"));
         Serial.println(String(current_avg));
