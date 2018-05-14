@@ -137,16 +137,6 @@ void getCommand() {
 }
 
 void loop() {
-  bool detected = false;
-  long reading_sum = 0;
-  long current_avg = 0;
-  long tmp_avg = 0;
-  long iteration = 1;
-  long new_avg_threshold_count = 1;
-  bool calibrated = false;
-  long detection_threshold_count = 1;
-  long last_loop = 0;
-  long last_detection = 0;
   getCommand();
 
   if (command == "ID") {
@@ -195,28 +185,52 @@ void loop() {
   
   if (command == "STRT") {
     digitalWrite(tr_pwr_pin, HIGH);
+    bool detected = false;
+    long reading_sum = 0;
+    long current_avg = 0;
+    long tmp_avg = 0;
+    long iteration = 1;
+    long new_avg_threshold_count = 0;
+    bool calibrated = false;
+    long detection_threshold_count = 0;
+    long no_detection_threshold_count = 0;
+    long last_loop = 0;
+    long last_detection = 0;
     while (command != "STP") {
       int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
       long current_ms = millis();
       if (calibrated == true) {
+        if (detection_threshold_count > 0 && detection_threshold_count < detection_threshold) {
+          Serial.println(detection_threshold_count);
+        }
+        if (no_detection_threshold_count > 0) {
+          Serial.println(no_detection_threshold_count);
+        }
         if (reading <= (current_avg - lower_limit_distance)) {
           if (detection_threshold_count < detection_threshold) {
             detection_threshold_count++;
-          }
-          if (detection_threshold_count == detection_threshold) {
+          } else {
+            no_detection_threshold_count = 0;
             if (detected == false) {
               detected = true;
-              if (current_ms - last_detection > 5000) {
+              if (current_ms - last_detection >= 1000) {
                 last_detection = current_ms;
                 Serial.println(F("DET"));
               }
             }
           }
         } else {
-          detection_threshold_count = 1;
           if (detected == true) {
-            detected = false;
-            blinkLED(&led_pwr_pin);
+            if (no_detection_threshold_count < 50) {
+              no_detection_threshold_count++;
+            } else {
+              no_detection_threshold_count = 0;
+              detection_threshold_count = 0;
+              detected = false;
+              blinkLED(&led_pwr_pin);
+            }
+          } else {
+            detection_threshold_count = 0;
           }
         }
       }
