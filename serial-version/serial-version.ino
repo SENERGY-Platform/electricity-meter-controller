@@ -177,7 +177,26 @@ void loop() {
     while (command != "STP") {
       getCommand();
       Serial.println(denoisedRead(&signal_pin, &ir_pwr_pin));
-      delay(50);
+      delay(30);
+    }
+    digitalWrite(tr_pwr_pin, LOW);
+    Serial.println(F("RDY"));
+  }
+
+  if (command == "FL") {
+    digitalWrite(tr_pwr_pin, HIGH);
+    int lowest = 0;
+    while (command != "STP") {
+      getCommand();
+      int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+      if (lowest == 0) {
+        lowest = reading;
+      }
+      if (reading < lowest) {
+        lowest = reading;
+        Serial.println(lowest);
+      }
+      delay(1);
     }
     digitalWrite(tr_pwr_pin, LOW);
     Serial.println(F("RDY"));
