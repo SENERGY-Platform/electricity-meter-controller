@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="1" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
+<grid distance="50" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="5" altunitdist="mil" altunit="mil"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
@@ -76,16 +76,16 @@
 <wire x1="-0.5" y1="-3" x2="-0.5" y2="-2.8" width="0.127" layer="21"/>
 <wire x1="-0.5" y1="-2.8" x2="0.5" y2="-2.8" width="0.127" layer="21"/>
 <wire x1="0.5" y1="-2.8" x2="0.5" y2="-3" width="0.127" layer="21"/>
-<pad name="E" x="1.4" y="1.4" drill="0.7"/>
-<pad name="A" x="-1.4" y="1.4" drill="0.7" shape="square"/>
-<pad name="CATH" x="-1.4" y="-1.4" drill="0.7"/>
-<pad name="COLL" x="1.4" y="-1.4" drill="0.7"/>
+<pad name="E" x="1.4" y="1.4" drill="0.75" diameter="1.8796"/>
+<pad name="A" x="-1.4" y="1.4" drill="0.75" diameter="1.8796" shape="square"/>
+<pad name="CATH" x="-1.4" y="-1.4" drill="0.75" diameter="1.8796"/>
+<pad name="COLL" x="1.4" y="-1.4" drill="0.75" diameter="1.8796"/>
 </package>
 <package name="DF1BZ-4DP-2.5DSA">
-<pad name="1" x="-1.25" y="1.25" drill="1.1" rot="R180"/>
-<pad name="2" x="1.25" y="1.25" drill="1.1" rot="R180"/>
-<pad name="4" x="1.25" y="-1.25" drill="1.1" rot="R180"/>
-<pad name="3" x="-1.25" y="-1.25" drill="1.1" rot="R180"/>
+<pad name="1" x="-1.25" y="1.25" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="2" x="1.25" y="1.25" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="4" x="1.25" y="-1.25" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="3" x="-1.25" y="-1.25" drill="1.016" diameter="1.8796" rot="R180"/>
 <wire x1="-3" y1="3" x2="3" y2="3" width="0.127" layer="21"/>
 <wire x1="3" y1="3" x2="3" y2="-0.65" width="0.127" layer="21"/>
 <wire x1="3" y1="-1.85" x2="3" y2="-3" width="0.127" layer="21"/>
@@ -110,16 +110,16 @@
 <wire x1="2.9972" y1="-3.048" x2="2.9972" y2="-2.921" width="0.127" layer="21"/>
 </package>
 <package name="DIP-SW-CTS-208-5">
-<pad name="1_ON" x="0" y="0" drill="0.65"/>
-<pad name="1_OFF" x="0" y="-7.62" drill="0.65"/>
-<pad name="2_OFF" x="2.54" y="-7.62" drill="0.65"/>
-<pad name="3_OFF" x="5.08" y="-7.62" drill="0.65" rot="R180"/>
-<pad name="4_OFF" x="7.62" y="-7.62" drill="0.65" rot="R180"/>
-<pad name="5_OFF" x="10.16" y="-7.62" drill="0.65" rot="R180"/>
-<pad name="2_ON" x="2.54" y="0" drill="0.65" rot="R180"/>
-<pad name="3_ON" x="5.08" y="0" drill="0.65" rot="R180"/>
-<pad name="4_ON" x="7.62" y="0" drill="0.65" rot="R180"/>
-<pad name="5_ON" x="10.16" y="0" drill="0.65" rot="R180"/>
+<pad name="1_ON" x="0" y="0" drill="1.016" diameter="1.8796"/>
+<pad name="1_OFF" x="0" y="-7.62" drill="1.016" diameter="1.8796"/>
+<pad name="2_OFF" x="2.54" y="-7.62" drill="1.016" diameter="1.8796"/>
+<pad name="3_OFF" x="5.08" y="-7.62" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="4_OFF" x="7.62" y="-7.62" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="5_OFF" x="10.16" y="-7.62" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="2_ON" x="2.54" y="0" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="3_ON" x="5.08" y="0" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="4_ON" x="7.62" y="0" drill="1.016" diameter="1.8796" rot="R180"/>
+<pad name="5_ON" x="10.16" y="0" drill="1.016" diameter="1.8796" rot="R180"/>
 <wire x1="-2.3" y1="1" x2="12.5" y2="1" width="0.127" layer="21"/>
 <wire x1="12.5" y1="1" x2="12.5" y2="-8.6" width="0.127" layer="21"/>
 <wire x1="12.5" y1="-8.6" x2="-2.3" y2="-8.6" width="0.127" layer="21"/>
@@ -128,9 +128,9 @@
 <text x="9.7" y="-4.3" size="1.27" layer="21">5</text>
 </package>
 <package name="CT6EP103">
-<pad name="2" x="0" y="2.5" drill="0.5"/>
-<pad name="3" x="-2.54" y="0.04" drill="0.5"/>
-<pad name="1" x="2.44" y="0.04" drill="0.5"/>
+<pad name="2" x="0" y="2.5" drill="1.016" diameter="1.8796"/>
+<pad name="3" x="-2.54" y="0.04" drill="1.016" diameter="1.8796"/>
+<pad name="1" x="2.44" y="0.04" drill="1.016" diameter="1.8796"/>
 <wire x1="2.5" y1="3.5" x2="3.5" y2="2.5" width="0.127" layer="21" curve="-53.130102"/>
 <wire x1="3.5" y1="-2.5" x2="2.5" y2="-3.5" width="0.127" layer="21" curve="-90"/>
 <wire x1="3.5" y1="2.5" x2="3.5" y2="-2.5" width="0.127" layer="21"/>
