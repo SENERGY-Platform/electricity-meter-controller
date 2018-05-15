@@ -177,7 +177,7 @@ void loop() {
     while (command != "STP") {
       getCommand();
       Serial.println(denoisedRead(&signal_pin, &ir_pwr_pin));
-      delay(50);
+      delay(100);
     }
     digitalWrite(tr_pwr_pin, LOW);
     Serial.println(F("RDY"));
@@ -214,7 +214,7 @@ void loop() {
     long detection_threshold_count = 0;
     long no_detection_threshold_count = 0;
     long last_loop = 0;
-    long last_detection = 0;
+    //long last_detection = 0;
     while (command != "STP") {
       int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
       long current_ms = millis();
@@ -226,10 +226,11 @@ void loop() {
             no_detection_threshold_count = 0;
             if (detected == false) {
               detected = true;
-              if (current_ms - last_detection >= 1000) {
-                last_detection = current_ms;
-                Serial.println(F("DET"));
-              }
+              Serial.println(F("DET"));
+              //if (current_ms - last_detection >= 1000) {
+                //last_detection = current_ms;
+                //Serial.println(F("DET"));
+              //}
             }
           }
         } else {
