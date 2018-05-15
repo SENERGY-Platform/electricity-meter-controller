@@ -177,7 +177,7 @@ void loop() {
     while (command != "STP") {
       getCommand();
       Serial.println(denoisedRead(&signal_pin, &ir_pwr_pin));
-      delay(30);
+      delay(50);
     }
     digitalWrite(tr_pwr_pin, LOW);
     Serial.println(F("RDY"));
