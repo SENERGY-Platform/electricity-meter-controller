@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -9,6 +9,20 @@
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
+<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
+<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
+<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
+<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
+<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
+<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
+<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
+<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
+<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
+<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
@@ -287,10 +301,10 @@
 <parts>
 <part name="U$1" library="ferraris_sensor_project" deviceset="CNY70" device=""/>
 <part name="U$2" library="ferraris_sensor_project" deviceset="CNY70" device=""/>
-<part name="1" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
-<part name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
-<part name="3" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
 <part name="4" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="1" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="3" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
 </parts>
 <sheets>
 <sheet>
@@ -299,10 +313,10 @@
 <instances>
 <instance part="U$1" gate="G$1" x="60.96" y="58.42"/>
 <instance part="U$2" gate="G$1" x="81.28" y="58.42" rot="R180"/>
-<instance part="1" gate="1" x="68.58" y="71.12"/>
+<instance part="4" gate="1" x="68.58" y="71.12"/>
 <instance part="2" gate="1" x="73.66" y="30.48" rot="R180"/>
-<instance part="3" gate="1" x="55.88" y="48.26"/>
-<instance part="4" gate="1" x="55.88" y="40.64"/>
+<instance part="1" gate="1" x="55.88" y="48.26"/>
+<instance part="3" gate="1" x="55.88" y="40.64"/>
 </instances>
 <busses>
 </busses>
@@ -333,7 +347,7 @@
 <net name="TR_PWR" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="5V(PWR)"/>
-<pinref part="3" gate="1" pin="P"/>
+<pinref part="1" gate="1" pin="P"/>
 <wire x1="67.46" y1="56.92" x2="67.46" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="67.46" y1="48.26" x2="58.42" y2="48.26" width="0.1524" layer="91"/>
 <label x="58.42" y="45.72" size="1.778" layer="95"/>
@@ -342,7 +356,7 @@
 <net name="GND_A" class="0">
 <segment>
 <pinref part="U$2" gate="G$1" pin="GND(PWR)"/>
-<pinref part="4" gate="1" pin="P"/>
+<pinref part="3" gate="1" pin="P"/>
 <wire x1="74.78" y1="56.92" x2="74.78" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="74.78" y1="40.64" x2="58.42" y2="40.64" width="0.1524" layer="91"/>
 <label x="58.42" y="40.64" size="1.778" layer="95"/>
@@ -350,7 +364,7 @@
 </net>
 <net name="IR_PWR" class="0">
 <segment>
-<pinref part="1" gate="1" pin="P"/>
+<pinref part="4" gate="1" pin="P"/>
 <wire x1="71.12" y1="71.12" x2="71.12" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="66.04" x2="93.98" y2="66.04" width="0.1524" layer="91"/>
 <pinref part="U$2" gate="G$1" pin="5V(DIG)"/>
