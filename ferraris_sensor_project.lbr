@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.7.1">
+<eagle version="9.0.1">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -81,45 +81,38 @@
 <pad name="CATH" x="-1.4" y="-1.4" drill="0.7"/>
 <pad name="COLL" x="1.4" y="-1.4" drill="0.7"/>
 </package>
-<package name="DF1BZ-4DP-2.5DSA">
+<package name="DF1BZ-4DP-2.5DS">
 <pad name="1" x="-1.25" y="1.25" drill="1.1" rot="R180"/>
 <pad name="2" x="1.25" y="1.25" drill="1.1" rot="R180"/>
 <pad name="4" x="1.25" y="-1.25" drill="1.1" rot="R180"/>
 <pad name="3" x="-1.25" y="-1.25" drill="1.1" rot="R180"/>
-<wire x1="-3" y1="3" x2="3" y2="3" width="0.127" layer="21"/>
-<wire x1="3" y1="3" x2="3" y2="-0.65" width="0.127" layer="21"/>
-<wire x1="3" y1="-1.85" x2="3" y2="-3" width="0.127" layer="21"/>
-<wire x1="-3" y1="-3" x2="-3" y2="-1.85" width="0.127" layer="21"/>
-<wire x1="-3" y1="-0.65" x2="-3" y2="3" width="0.127" layer="21"/>
-<wire x1="-3" y1="-0.65" x2="-2.7" y2="-0.65" width="0.127" layer="21"/>
-<wire x1="2.7" y1="-0.65" x2="3" y2="-0.65" width="0.127" layer="21"/>
-<wire x1="-3" y1="-1.85" x2="-2.7" y2="-1.85" width="0.127" layer="21"/>
-<wire x1="2.7" y1="-1.85" x2="3" y2="-1.85" width="0.127" layer="21"/>
-<wire x1="-2.7" y1="-0.65" x2="-2.7" y2="-1.85" width="0.127" layer="21"/>
-<wire x1="2.7" y1="-0.65" x2="2.7" y2="-1.85" width="0.127" layer="21"/>
 <text x="-5.08" y="1.27" size="1.27" layer="21">1</text>
 <text x="4.191" y="1.27" size="1.27" layer="21">2</text>
 <text x="-5.08" y="-2.54" size="1.27" layer="21">3</text>
 <text x="4.191" y="-2.54" size="1.27" layer="21">4</text>
-<wire x1="-0.635" y1="-2.794" x2="0.635" y2="-2.794" width="0.127" layer="21"/>
-<wire x1="0.635" y1="-2.794" x2="0.635" y2="-3.048" width="0.127" layer="21"/>
-<wire x1="-0.635" y1="-2.794" x2="-0.635" y2="-3.048" width="0.127" layer="21"/>
-<wire x1="-0.635" y1="-3.048" x2="-2.9972" y2="-3.048" width="0.127" layer="21"/>
-<wire x1="-2.9972" y1="-3.048" x2="-2.9972" y2="-2.794" width="0.127" layer="21"/>
-<wire x1="0.635" y1="-3.048" x2="2.9972" y2="-3.048" width="0.127" layer="21"/>
-<wire x1="2.9972" y1="-3.048" x2="2.9972" y2="-2.921" width="0.127" layer="21"/>
+<wire x1="-3.0226" y1="-5.3086" x2="2.9972" y2="-5.3086" width="0.127" layer="21"/>
+<wire x1="2.9972" y1="2.9972" x2="2.9972" y2="-5.3086" width="0.127" layer="21"/>
+<wire x1="-3.0226" y1="-5.3086" x2="-3.0226" y2="2.9972" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="2.6162" x2="1.27" y2="2.6162" width="0.127" layer="21"/>
+<wire x1="-1.27" y1="2.6162" x2="-1.27" y2="2.9972" width="0.127" layer="21"/>
+<wire x1="1.27" y1="2.6162" x2="1.27" y2="2.9972" width="0.127" layer="21"/>
+<wire x1="-3.0226" y1="2.9972" x2="-1.27" y2="2.9972" width="0.127" layer="21"/>
+<wire x1="1.27" y1="2.9972" x2="2.9972" y2="2.9972" width="0.127" layer="21"/>
+<wire x1="0" y1="-6.477" x2="0" y2="-5.9436" width="0.127" layer="21"/>
+<wire x1="-0.0254" y1="-5.969" x2="-0.254" y2="-6.1722" width="0.127" layer="21"/>
+<wire x1="0" y1="-5.9436" x2="0.254" y2="-6.1722" width="0.127" layer="21"/>
 </package>
 <package name="DIP-SW-CTS-208-5">
-<pad name="1_ON" x="0" y="0" drill="0.65"/>
-<pad name="1_OFF" x="0" y="-7.62" drill="0.65"/>
-<pad name="2_OFF" x="2.54" y="-7.62" drill="0.65"/>
-<pad name="3_OFF" x="5.08" y="-7.62" drill="0.65" rot="R180"/>
-<pad name="4_OFF" x="7.62" y="-7.62" drill="0.65" rot="R180"/>
-<pad name="5_OFF" x="10.16" y="-7.62" drill="0.65" rot="R180"/>
-<pad name="2_ON" x="2.54" y="0" drill="0.65" rot="R180"/>
-<pad name="3_ON" x="5.08" y="0" drill="0.65" rot="R180"/>
-<pad name="4_ON" x="7.62" y="0" drill="0.65" rot="R180"/>
-<pad name="5_ON" x="10.16" y="0" drill="0.65" rot="R180"/>
+<pad name="1_ON" x="0" y="0" drill="0.7"/>
+<pad name="1_OFF" x="0" y="-7.62" drill="0.7"/>
+<pad name="2_OFF" x="2.54" y="-7.62" drill="0.7"/>
+<pad name="3_OFF" x="5.08" y="-7.62" drill="0.7" rot="R180"/>
+<pad name="4_OFF" x="7.62" y="-7.62" drill="0.7" rot="R180"/>
+<pad name="5_OFF" x="10.16" y="-7.62" drill="0.7" rot="R180"/>
+<pad name="2_ON" x="2.54" y="0" drill="0.7" rot="R180"/>
+<pad name="3_ON" x="5.08" y="0" drill="0.7" rot="R180"/>
+<pad name="4_ON" x="7.62" y="0" drill="0.7" rot="R180"/>
+<pad name="5_ON" x="10.16" y="0" drill="0.7" rot="R180"/>
 <wire x1="-2.3" y1="1" x2="12.5" y2="1" width="0.127" layer="21"/>
 <wire x1="12.5" y1="1" x2="12.5" y2="-8.6" width="0.127" layer="21"/>
 <wire x1="12.5" y1="-8.6" x2="-2.3" y2="-8.6" width="0.127" layer="21"/>
@@ -128,9 +121,9 @@
 <text x="9.7" y="-4.3" size="1.27" layer="21">5</text>
 </package>
 <package name="CT6EP103">
-<pad name="2" x="0" y="2.5" drill="0.5"/>
-<pad name="3" x="-2.54" y="0.04" drill="0.5"/>
-<pad name="1" x="2.44" y="0.04" drill="0.5"/>
+<pad name="2" x="0" y="2.5" drill="0.6"/>
+<pad name="3" x="-2.54" y="0.04" drill="0.6"/>
+<pad name="1" x="2.44" y="0.04" drill="0.6"/>
 <wire x1="2.5" y1="3.5" x2="3.5" y2="2.5" width="0.127" layer="21" curve="-53.130102"/>
 <wire x1="3.5" y1="-2.5" x2="2.5" y2="-3.5" width="0.127" layer="21" curve="-90"/>
 <wire x1="3.5" y1="2.5" x2="3.5" y2="-2.5" width="0.127" layer="21"/>
@@ -170,7 +163,7 @@
 <pin name="GND(PWR)" x="6.5" y="1.5" visible="pad" length="middle" direction="pwr" rot="R180"/>
 <pin name="5V(PWR)" x="6.5" y="-1.5" visible="pad" length="middle" direction="pwr" rot="R180"/>
 </symbol>
-<symbol name="DF1BZ-4DP-2.5DSA">
+<symbol name="DF1BZ-4DP-2.5DS">
 <pin name="1" x="0" y="3" visible="pin" length="middle" direction="pwr"/>
 <pin name="2" x="0" y="0" visible="pin" length="middle" direction="pwr"/>
 <pin name="3" x="0" y="-3" visible="pin" length="middle" direction="pwr"/>
@@ -232,12 +225,12 @@
 </device>
 </devices>
 </deviceset>
-<deviceset name="DF1BZ-4DP-2.5DSA">
+<deviceset name="DF1BZ-4DP-2.5DS">
 <gates>
-<gate name="G$1" symbol="DF1BZ-4DP-2.5DSA" x="0" y="0"/>
+<gate name="G$1" symbol="DF1BZ-4DP-2.5DS" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="DF1BZ-4DP-2.5DSA">
+<device name="" package="DF1BZ-4DP-2.5DS">
 <connects>
 <connect gate="G$1" pin="1" pad="1"/>
 <connect gate="G$1" pin="2" pad="2"/>
