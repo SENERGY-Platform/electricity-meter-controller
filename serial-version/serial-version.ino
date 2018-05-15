@@ -214,7 +214,6 @@ void loop() {
     long detection_threshold_count = 0;
     long no_detection_threshold_count = 0;
     long last_loop = 0;
-    //long last_detection = 0;
     while (command != "STP") {
       int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
       long current_ms = millis();
@@ -227,10 +226,6 @@ void loop() {
             if (detected == false) {
               detected = true;
               Serial.println(F("DET"));
-              //if (current_ms - last_detection >= 1000) {
-                //last_detection = current_ms;
-                //Serial.println(F("DET"));
-              //}
             }
           }
         } else {
