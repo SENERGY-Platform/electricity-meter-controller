@@ -200,12 +200,6 @@ void loop() {
       int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
       long current_ms = millis();
       if (calibrated == true) {
-        if (detection_threshold_count > 0 && detection_threshold_count < detection_threshold) {
-          Serial.println(detection_threshold_count);
-        }
-        if (no_detection_threshold_count > 0) {
-          Serial.println(no_detection_threshold_count);
-        }
         if (reading <= (current_avg - lower_limit_distance)) {
           if (detection_threshold_count < detection_threshold) {
             detection_threshold_count++;
