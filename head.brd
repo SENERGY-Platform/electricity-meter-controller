@@ -165,12 +165,12 @@
 <wire x1="21.59" y1="43.18" x2="20.32" y2="41.91" width="0.1524" layer="20"/>
 <wire x1="21.59" y1="35.56" x2="20.32" y2="36.83" width="0.1524" layer="20"/>
 <wire x1="20.32" y1="36.83" x2="20.32" y2="41.91" width="0.1524" layer="20"/>
-<wire x1="21.59" y1="35.56" x2="43.18" y2="35.56" width="0.1524" layer="20"/>
+<wire x1="21.59" y1="35.56" x2="42.545" y2="35.56" width="0.1524" layer="20"/>
 <hole x="39.3954" y="39.37" drill="2.032"/>
 <hole x="64.77" y="39.37" drill="2.032"/>
-<wire x1="60.96" y1="35.56" x2="82.55" y2="35.56" width="0.1524" layer="20"/>
+<wire x1="61.595" y1="35.56" x2="82.55" y2="35.56" width="0.1524" layer="20"/>
 <wire x1="20.955" y1="39.37" x2="83.185" y2="39.37" width="0.1524" layer="26"/>
-<text x="25.2222" y="40.9956" size="1.27" layer="26" rot="MR0">SEPL</text>
+<text x="53.975" y="27.0256" size="1.27" layer="26" rot="MR0">SEPL</text>
 <text x="45.72" y="30.988" size="0.6096" layer="25">IR_PWR</text>
 <text x="52.2224" y="30.988" size="0.6096" layer="25">TR_PWR</text>
 <text x="56.2102" y="30.988" size="0.6096" layer="25">GND</text>
@@ -178,19 +178,19 @@
 <wire x1="48.26" y1="26.67" x2="49.53" y2="25.4" width="0.1524" layer="20"/>
 <wire x1="49.53" y1="25.4" x2="54.61" y2="25.4" width="0.1524" layer="20"/>
 <wire x1="54.61" y1="25.4" x2="55.88" y2="26.67" width="0.1524" layer="20"/>
-<wire x1="46.99" y1="30.48" x2="48.26" y2="29.21" width="0.1524" layer="20"/>
-<wire x1="48.26" y1="29.21" x2="48.26" y2="26.67" width="0.1524" layer="20"/>
-<wire x1="46.99" y1="30.48" x2="45.72" y2="30.48" width="0.1524" layer="20"/>
-<wire x1="55.88" y1="29.21" x2="57.15" y2="30.48" width="0.1524" layer="20"/>
-<wire x1="57.15" y1="30.48" x2="58.42" y2="30.48" width="0.1524" layer="20"/>
-<wire x1="55.88" y1="29.21" x2="55.88" y2="26.67" width="0.1524" layer="20"/>
-<wire x1="52.07" y1="26.035" x2="52.07" y2="42.545" width="0.1524" layer="26"/>
-<wire x1="45.72" y1="30.48" x2="44.45" y2="31.75" width="0.1524" layer="20"/>
-<wire x1="44.45" y1="31.75" x2="44.45" y2="34.29" width="0.1524" layer="20"/>
-<wire x1="44.45" y1="34.29" x2="43.18" y2="35.56" width="0.1524" layer="20"/>
-<wire x1="58.42" y1="30.48" x2="59.69" y2="31.75" width="0.1524" layer="20"/>
-<wire x1="59.69" y1="31.75" x2="59.69" y2="34.29" width="0.1524" layer="20"/>
-<wire x1="59.69" y1="34.29" x2="60.96" y2="35.56" width="0.1524" layer="20"/>
+<wire x1="52.07" y1="42.545" x2="52.07" y2="29.21" width="0.1524" layer="26"/>
+<wire x1="60.325" y1="34.29" x2="61.595" y2="35.56" width="0.1524" layer="20"/>
+<wire x1="60.325" y1="34.29" x2="60.325" y2="31.115" width="0.1524" layer="20"/>
+<wire x1="60.325" y1="31.115" x2="59.055" y2="29.845" width="0.1524" layer="20"/>
+<wire x1="42.545" y1="35.56" x2="43.815" y2="34.29" width="0.1524" layer="20"/>
+<wire x1="43.815" y1="34.29" x2="43.815" y2="31.115" width="0.1524" layer="20"/>
+<wire x1="43.815" y1="31.115" x2="45.085" y2="29.845" width="0.1524" layer="20"/>
+<wire x1="45.085" y1="29.845" x2="46.99" y2="29.845" width="0.1524" layer="20"/>
+<wire x1="46.99" y1="29.845" x2="48.26" y2="28.575" width="0.1524" layer="20"/>
+<wire x1="48.26" y1="28.575" x2="48.26" y2="26.67" width="0.1524" layer="20"/>
+<wire x1="55.88" y1="26.67" x2="55.88" y2="28.575" width="0.1524" layer="20"/>
+<wire x1="55.88" y1="28.575" x2="57.15" y2="29.845" width="0.1524" layer="20"/>
+<wire x1="57.15" y1="29.845" x2="59.055" y2="29.845" width="0.1524" layer="20"/>
 </plain>
 <libraries>
 <library name="wirepad" urn="urn:adsk.eagle:library:412">
@@ -439,9 +439,9 @@ design rules under a new name.</description>
 </autorouter>
 <elements>
 <element name="4" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="2,15/1,0" package3d_urn="urn:adsk.eagle:package:30831/1" value="" x="47.1805" y="33.147"/>
-<element name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="2,15/1,0" package3d_urn="urn:adsk.eagle:package:30831/1" value="" x="56.9595" y="33.147"/>
+<element name="1" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="2,15/1,0" package3d_urn="urn:adsk.eagle:package:30831/1" value="" x="56.9595" y="33.147"/>
 <element name="3" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="2,15/1,0" package3d_urn="urn:adsk.eagle:package:30831/1" value="" x="50.3555" y="33.147"/>
-<element name="1" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="2,15/1,0" package3d_urn="urn:adsk.eagle:package:30831/1" value="" x="53.7972" y="33.147"/>
+<element name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" package="2,15/1,0" package3d_urn="urn:adsk.eagle:package:30831/1" value="" x="53.7972" y="33.147"/>
 <element name="U$1" library="ferraris_sensor_project" package="CNY70" value="CNY70" x="48.4505" y="39.37"/>
 <element name="U$2" library="ferraris_sensor_project" package="CNY70" value="CNY70" x="55.6895" y="39.37" rot="R180"/>
 </elements>
@@ -453,7 +453,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="GND_D">
 <contactref element="U$2" pad="CATH"/>
-<contactref element="2" pad="1"/>
+<contactref element="1" pad="1"/>
 <contactref element="U$1" pad="CATH"/>
 <polygon width="0.1524" layer="1" isolate="0.4064">
 <vertex x="44.45" y="31.75"/>
@@ -468,7 +468,7 @@ design rules under a new name.</description>
 </signal>
 <signal name="TR_PWR">
 <contactref element="U$1" pad="COLL"/>
-<contactref element="1" pad="1"/>
+<contactref element="2" pad="1"/>
 <wire x1="49.8505" y1="37.97" x2="49.8505" y2="37.0937" width="0.3048" layer="1"/>
 <wire x1="49.8505" y1="37.0937" x2="53.7972" y2="33.147" width="0.3048" layer="1"/>
 </signal>

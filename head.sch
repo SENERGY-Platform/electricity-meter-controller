@@ -302,8 +302,8 @@
 <part name="U$1" library="ferraris_sensor_project" deviceset="CNY70" device=""/>
 <part name="U$2" library="ferraris_sensor_project" deviceset="CNY70" device=""/>
 <part name="4" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
-<part name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
 <part name="1" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
+<part name="2" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
 <part name="3" library="wirepad" library_urn="urn:adsk.eagle:library:412" deviceset="2,15/1,0" device="" package3d_urn="urn:adsk.eagle:package:30831/1"/>
 </parts>
 <sheets>
@@ -314,8 +314,8 @@
 <instance part="U$1" gate="G$1" x="60.96" y="58.42"/>
 <instance part="U$2" gate="G$1" x="81.28" y="58.42" rot="R180"/>
 <instance part="4" gate="1" x="68.58" y="71.12"/>
-<instance part="2" gate="1" x="73.66" y="30.48" rot="R180"/>
-<instance part="1" gate="1" x="55.88" y="48.26"/>
+<instance part="1" gate="1" x="73.66" y="30.48" rot="R180"/>
+<instance part="2" gate="1" x="55.88" y="48.26"/>
 <instance part="3" gate="1" x="55.88" y="40.64"/>
 </instances>
 <busses>
@@ -335,7 +335,7 @@
 <wire x1="91.44" y1="59.92" x2="91.44" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="91.44" y1="35.56" x2="71.12" y2="35.56" width="0.1524" layer="91"/>
 <wire x1="71.12" y1="35.56" x2="50.8" y2="35.56" width="0.1524" layer="91"/>
-<pinref part="2" gate="1" pin="P"/>
+<pinref part="1" gate="1" pin="P"/>
 <wire x1="71.12" y1="30.48" x2="71.12" y2="35.56" width="0.1524" layer="91"/>
 <junction x="71.12" y="35.56"/>
 <pinref part="U$1" gate="G$1" pin="GND(DIG)"/>
@@ -347,7 +347,7 @@
 <net name="TR_PWR" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="5V(PWR)"/>
-<pinref part="1" gate="1" pin="P"/>
+<pinref part="2" gate="1" pin="P"/>
 <wire x1="67.46" y1="56.92" x2="67.46" y2="48.26" width="0.1524" layer="91"/>
 <wire x1="67.46" y1="48.26" x2="58.42" y2="48.26" width="0.1524" layer="91"/>
 <label x="58.42" y="45.72" size="1.778" layer="95"/>

@@ -7041,10 +7041,10 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <instance part="X20" gate="G$1" x="66.04" y="-38.1"/>
 <instance part="X21" gate="G$1" x="-12.7" y="35.56"/>
 <instance part="X22" gate="G$1" x="-5.08" y="48.26"/>
-<instance part="X23" gate="G$1" x="2.54" y="38.1"/>
+<instance part="X23" gate="G$1" x="12.7" y="33.02"/>
 <instance part="X24" gate="G$1" x="25.4" y="20.32"/>
 <instance part="X25" gate="G$1" x="60.96" y="20.32"/>
-<instance part="X26" gate="G$1" x="15.24" y="30.48"/>
+<instance part="X26" gate="G$1" x="7.62" y="43.18"/>
 <instance part="X27" gate="G$1" x="33.02" y="50.8"/>
 <instance part="U$1" gate="G$1" x="15.24" y="43.18" rot="R90"/>
 <instance part="U$2" gate="G$1" x="55.88" y="-25.4"/>
@@ -7093,9 +7093,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="60.96" y="20.32" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="15.24" y1="43.18" x2="15.24" y2="30.48" width="0.1524" layer="91"/>
-<label x="5.08" y="30.48" size="1.778" layer="95"/>
-<pinref part="U$1" gate="G$1" pin="2"/>
+<label x="0" y="43.18" size="1.778" layer="95"/>
+<pinref part="U$1" gate="G$1" pin="1"/>
+<wire x1="7.62" y1="43.18" x2="12.24" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="DIP_1" class="0">
@@ -7169,11 +7169,12 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <label x="-5.08" y="12.7" size="1.778" layer="95"/>
 </segment>
 <segment>
-<label x="2.54" y="35.56" size="1.778" layer="95"/>
-<pinref part="U$1" gate="G$1" pin="1"/>
-<wire x1="0" y1="38.1" x2="2.54" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="12.24" y1="43.18" x2="0" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="0" y1="43.18" x2="0" y2="38.1" width="0.1524" layer="91"/>
+<label x="12.7" y="33.02" size="1.778" layer="95"/>
+<wire x1="5.08" y1="33.02" x2="12.7" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="33.02" x2="5.08" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="5.08" y1="38.1" x2="15.24" y2="38.1" width="0.1524" layer="91"/>
+<pinref part="U$1" gate="G$1" pin="2"/>
+<wire x1="15.24" y1="38.1" x2="15.24" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="DIP_3" class="0">
