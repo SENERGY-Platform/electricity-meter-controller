@@ -21,6 +21,7 @@ const pdcm dip_pins[] = {
 
 int new_avg_threshold = 0;
 int detection_threshold = 0;
+int no_detection_threshold = 0;
 int lower_limit_distance = 0;
 
 
@@ -136,6 +137,22 @@ void getCommand() {
   }
 }
 
+int reading;
+long current_ms;
+bool detected;
+long reading_sum;
+long average;
+long current_avg;
+long tmp_avg;
+long iteration;
+long new_avg_threshold_count;
+bool calibrated;
+long detection_threshold_count;
+long no_detection_threshold_count;
+long last_loop;
+int i_count;
+
+
 void loop() {
   getCommand();
 
@@ -146,9 +163,8 @@ void loop() {
   }
   
   if (command == "CONF") {
-    Serial.println(F("NAT:DT:LLD"));
-    int i_count = 10;
-    int interval = 5000 / i_count;
+    Serial.println(F("NAT:DT:NDT:LLD"));
+    i_count = 10;
     while (command == "CONF") {
       String conf_line = readLine();
       if (conf_line != "") {
@@ -156,16 +172,18 @@ void loop() {
         new_avg_threshold = conf_line.substring(0, pos).toInt();
         int pos2 = conf_line.indexOf(":", pos+1);
         detection_threshold = conf_line.substring(pos+1, pos2).toInt();
-        lower_limit_distance = conf_line.substring(pos2+1).toInt();
-        Serial.println(String(new_avg_threshold) + ":" + String(detection_threshold) + ":" + String(lower_limit_distance));
+        int pos3 = conf_line.indexOf(":", pos2+1);
+        no_detection_threshold = conf_line.substring(pos2+1, pos3).toInt();
+        lower_limit_distance = conf_line.substring(pos3+1).toInt();
+        Serial.println(String(new_avg_threshold) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold) + ":" + String(lower_limit_distance));
         command = "";
       } else {
         if (i_count < 1) {
-          Serial.println(String(new_avg_threshold) + ":" + String(detection_threshold) + ":" + String(lower_limit_distance));
+          Serial.println(String(new_avg_threshold) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold) + ":" + String(lower_limit_distance));
           command = "";
           break;
         }
-        delay(interval);
+        delay(5000 / i_count);
         i_count--;
       }
     }
@@ -183,18 +201,30 @@ void loop() {
     Serial.println(F("RDY"));
   }
 
-  if (command == "FL") {
+  if (command == "FE") {
     digitalWrite(tr_pwr_pin, HIGH);
-    int lowest = 0;
+    int lowest = -100;
+    int highest = 0;
+    bool change = false;
     while (command != "STP") {
       getCommand();
-      int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
-      if (lowest == 0) {
+      reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+      if (lowest == -100) {
         lowest = reading;
       }
-      if (reading < lowest) {
+      if (reading >= 0 && reading < lowest) {
         lowest = reading;
-        Serial.println(lowest);
+        change = true;
+      }
+      if (reading > highest) {
+        highest = reading;
+        change = true;
+      }
+      if (change == true) {
+        Serial.print(lowest);
+        Serial.print(F(":"));
+        Serial.println(highest);
+        change = false;
       }
       delay(1);
     }
@@ -204,19 +234,20 @@ void loop() {
   
   if (command == "STRT") {
     digitalWrite(tr_pwr_pin, HIGH);
-    bool detected = false;
-    long reading_sum = 0;
-    long current_avg = 0;
-    long tmp_avg = 0;
-    long iteration = 1;
-    long new_avg_threshold_count = 0;
-    bool calibrated = false;
-    long detection_threshold_count = 0;
-    long no_detection_threshold_count = 0;
-    long last_loop = 0;
+    detected = false;
+    reading_sum = 0;
+    average = 0;
+    current_avg = 0;
+    tmp_avg = 0;
+    iteration = 1;
+    new_avg_threshold_count = 0;
+    calibrated = false;
+    detection_threshold_count = 0;
+    no_detection_threshold_count = 0;
+    last_loop = 0;
     while (command != "STP") {
-      int reading = denoisedRead(&signal_pin, &ir_pwr_pin);
-      long current_ms = millis();
+      reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+      current_ms = millis();
       if (calibrated == true) {
         if (reading <= (current_avg - lower_limit_distance)) {
           if (detection_threshold_count < detection_threshold) {
@@ -230,7 +261,7 @@ void loop() {
           }
         } else {
           if (detected == true) {
-            if (no_detection_threshold_count < 50) {
+            if (no_detection_threshold_count < no_detection_threshold) {
               no_detection_threshold_count++;
             } else {
               no_detection_threshold_count = 0;
@@ -243,8 +274,13 @@ void loop() {
           }
         }
       }
+      //if (reading_sum < 2147482623 && iteration < 2147482623) {
+      //  
+      //} else {
+      //
+      //}
       reading_sum = reading_sum + reading;
-      long average = reading_sum / iteration;
+      average = reading_sum / iteration;
       if (average == tmp_avg) {
         new_avg_threshold_count++;
       } else {
