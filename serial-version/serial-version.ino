@@ -274,17 +274,17 @@ void loop() {
           }
         }
       }
-      //if (reading_sum < 2147482623 && iteration < 2147482623) {
-      //  
-      //} else {
-      //
-      //}
-      reading_sum = reading_sum + reading;
-      average = reading_sum / iteration;
-      if (average == tmp_avg) {
-        new_avg_threshold_count++;
+      if (reading_sum < 2147482623 && iteration < 2147482623) {
+        reading_sum = reading_sum + reading;
+        average = reading_sum / iteration;
+        iteration++;
+        if (average == tmp_avg) {
+          new_avg_threshold_count++;
+        } else {
+          new_avg_threshold_count = 0;
+        }
       } else {
-        new_avg_threshold_count = 0;
+        new_avg_threshold_count = new_avg_threshold;
       }
       if (new_avg_threshold_count == new_avg_threshold) {
         current_avg = tmp_avg;
@@ -298,7 +298,6 @@ void loop() {
         Serial.println(String(current_avg));
       }
       tmp_avg = average;
-      iteration++;
       delay(1);
       getCommand();
       if (current_ms - last_loop > 5000) {
