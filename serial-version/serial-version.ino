@@ -49,7 +49,7 @@ String readDips(const int *pwr, pdcm *pins, int arr_size) {
 }
 
 
-void blinkLED(const int *led_pin, int times=1, int pause=200) {
+void blinkLED(const int *led_pin, int times=1, int pause=60) {
   for (int bl = 0; bl < times; bl++) {
     digitalWrite(*led_pin, HIGH);
     delay(pause);
@@ -121,7 +121,7 @@ void setup() {
   // print start message
   delay(2000);
   hw_id = readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
-  blinkLED(&led_pwr_pin, 1, 1000);
+  blinkLED(&led_pwr_pin, 1, 500);
   delay(500);
   Serial.println(F("RDY"));
 }
