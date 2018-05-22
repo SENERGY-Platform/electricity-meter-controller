@@ -203,32 +203,89 @@ void loop() {
 
   if (command == "FE") {
     digitalWrite(tr_pwr_pin, HIGH);
-    int lowest = -100;
-    int highest = 0;
+    int left_edge = -100;
+    int right_edge = 0;
     bool change = false;
     while (command != "STP") {
       getCommand();
       reading = denoisedRead(&signal_pin, &ir_pwr_pin);
-      if (lowest == -100) {
-        lowest = reading;
+      if (left_edge == -100) {
+        left_edge = reading;
       }
-      if (reading >= 0 && reading < lowest) {
-        lowest = reading;
+      if (reading >= 0 && reading < left_edge) {
+        left_edge = reading;
         change = true;
       }
-      if (reading > highest) {
-        highest = reading;
+      if (reading > right_edge) {
+        right_edge = reading;
         change = true;
       }
       if (change == true) {
-        Serial.print(lowest);
+        Serial.print(left_edge);
         Serial.print(F(":"));
-        Serial.println(highest);
+        Serial.println(right_edge);
         change = false;
       }
       delay(1);
     }
     digitalWrite(tr_pwr_pin, LOW);
+    Serial.println(F("RDY"));
+  }
+
+  if (command == "HST") {
+    Serial.println(F("LE:RE:RES"));
+    i_count = 10;
+    while (command == "HST") {
+      String conf_line = readLine();
+      if (conf_line != "") {
+        int pos = conf_line.indexOf(":");
+        int left_edge = conf_line.substring(0, pos).toInt();
+        int pos2 = conf_line.indexOf(":", pos+1);
+        int right_edge = conf_line.substring(pos+1, pos2).toInt();
+        const int resolution = conf_line.substring(pos2+1).toInt();
+        Serial.println(String(left_edge) + ":" + String(right_edge) + ":" + String(resolution));
+        int histogram[resolution][3];
+        int interval = (right_edge - left_edge) / resolution;
+        int remainder = (right_edge - left_edge) % resolution;
+        for (int bin = 0; bin < resolution; bin++) {
+          if (bin == 0) {
+            histogram[bin][0] = left_edge;
+            histogram[bin][1] = histogram[bin][0] + interval;
+            histogram[bin][2] = 0;
+          } else if (bin == resolution - 1) {
+            histogram[bin][0] = histogram[bin-1][1];
+            histogram[bin][1] = right_edge;
+            histogram[bin][2] = 0;
+          } else {
+            histogram[bin][0] = histogram[bin-1][1];
+            histogram[bin][1] = histogram[bin][0] + interval;
+            histogram[bin][2] = 0;
+          }
+        }
+        while (command != "STP") {
+          getCommand();
+          delay(10);
+        }
+        for (int bin = 0; bin < resolution; bin++) {
+          Serial.print("[");
+          Serial.print(histogram[bin][0]);
+          Serial.print(":");
+          Serial.print(histogram[bin][1]);
+          Serial.print(":");
+          Serial.print(histogram[bin][2]);
+          Serial.print("]");
+        }
+        Serial.println();
+      } else {
+        if (i_count < 1) {
+          Serial.println(F("NaN:NaN:NaN"));
+          command = "";
+          break;
+        }
+        delay(5000 / i_count);
+        i_count--;
+      }
+    }
     Serial.println(F("RDY"));
   }
   
