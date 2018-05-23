@@ -23,6 +23,8 @@ int new_avg_threshold = 0;
 int detection_threshold = 0;
 int no_detection_threshold = 0;
 int lower_limit_distance = 0;
+int left_boundary = 0;
+int right_boundary = 0;
 
 
 void setupDipPins(const pdcm *pins, int arr_size) {
@@ -161,20 +163,48 @@ void loop() {
     command = "";
     Serial.println(F("RDY"));
   }
-  
-  if (command == "CONF") {
-    Serial.println(F("NAT:DT:NDT:LLD"));
+
+  if (command == "CONFH") {
+    Serial.println(F("LB:RB:DT:NDT"));
     i_count = 10;
-    while (command == "CONF") {
+    while (command == "CONFH") {
+      String conf_line = readLine();
+      if (conf_line != "") {
+        int pos = conf_line.indexOf(":");
+        left_boundary = conf_line.substring(0, pos).toInt();
+        int pos2 = conf_line.indexOf(":", pos+1);
+        right_boundary = conf_line.substring(pos+1, pos2).toInt();
+        int pos3 = conf_line.indexOf(":", pos2+1);
+        detection_threshold = conf_line.substring(pos2+1, pos3).toInt();
+        no_detection_threshold = conf_line.substring(pos3+1).toInt();
+        Serial.println(String(left_boundary) + ":" + String(right_boundary) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold));
+        command = "";
+      } else {
+        if (i_count < 1) {
+          Serial.println(String(left_boundary) + ":" + String(right_boundary) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold));
+          command = "";
+          break;
+        }
+        delay(5000 / i_count);
+        i_count--;
+      }
+    }
+    Serial.println(F("RDY"));
+  }
+  
+  if (command == "CONFA") {
+    Serial.println(F("NAT:LLD:DT:NDT"));
+    i_count = 10;
+    while (command == "CONFA") {
       String conf_line = readLine();
       if (conf_line != "") {
         int pos = conf_line.indexOf(":");
         new_avg_threshold = conf_line.substring(0, pos).toInt();
         int pos2 = conf_line.indexOf(":", pos+1);
-        detection_threshold = conf_line.substring(pos+1, pos2).toInt();
+        lower_limit_distance = conf_line.substring(pos+1, pos2).toInt();
         int pos3 = conf_line.indexOf(":", pos2+1);
-        no_detection_threshold = conf_line.substring(pos2+1, pos3).toInt();
-        lower_limit_distance = conf_line.substring(pos3+1).toInt();
+        detection_threshold = conf_line.substring(pos2+1, pos3).toInt();
+        no_detection_threshold = conf_line.substring(pos3+1).toInt();
         Serial.println(String(new_avg_threshold) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold) + ":" + String(lower_limit_distance));
         command = "";
       } else {
@@ -287,13 +317,14 @@ void loop() {
         }
         digitalWrite(tr_pwr_pin, LOW);
         for (int bin = 0; bin < resolution; bin++) {
-          Serial.print("[");
           Serial.print(histogram[bin][0]);
           Serial.print(":");
           Serial.print(histogram[bin][1]);
           Serial.print(":");
           Serial.print(histogram[bin][2]);
-          Serial.print("]");
+          if (bin != resolution - 1) {
+            Serial.print(";");
+          }
         }
         Serial.println();
       } else {
@@ -308,8 +339,56 @@ void loop() {
     }
     Serial.println(F("RDY"));
   }
+
+  if (command == "STRTH") {
+    digitalWrite(tr_pwr_pin, HIGH);
+    detected = false;
+    detection_threshold_count = 0;
+    no_detection_threshold_count = 0;
+    last_loop = 0;
+    while (command != "STP") {
+      reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+      current_ms = millis();
+      if (reading >= left_boundary && reading <= right_boundary) {
+          if (detection_threshold_count < detection_threshold) {
+            detection_threshold_count++;
+          } else {
+            no_detection_threshold_count = 0;
+            if (detected == false) {
+              detected = true;
+              digitalWrite(led_pwr_pin, HIGH);
+              Serial.println(F("DET"));
+            }
+          }
+          //Serial.println(detection_threshold_count);
+      } else {
+          if (detected == true) {
+            if (no_detection_threshold_count < no_detection_threshold) {
+              no_detection_threshold_count++;
+            } else {
+              no_detection_threshold_count = 0;
+              detection_threshold_count = 0;
+              detected = false;
+              digitalWrite(led_pwr_pin, LOW);
+            }
+          } else {
+            detection_threshold_count = 0;
+          }
+      }
+      delay(1);
+      getCommand();
+      if (current_ms - last_loop > 5000) {
+        last_loop = current_ms;
+        if (detected != true) {
+          blinkLED(&led_pwr_pin, 1, 0);
+        }
+      }
+    }
+    digitalWrite(tr_pwr_pin, LOW);
+    Serial.println(F("RDY"));
+  }
   
-  if (command == "STRT") {
+  if (command == "STRTA") {
     digitalWrite(tr_pwr_pin, HIGH);
     detected = false;
     reading_sum = 0;
