@@ -244,8 +244,8 @@ void loop() {
         int right_edge = conf_line.substring(pos+1, pos2).toInt();
         const int resolution = conf_line.substring(pos2+1).toInt();
         Serial.println(String(left_edge) + ":" + String(right_edge) + ":" + String(resolution));
-        int histogram[resolution][3];
-        int interval = (right_edge - left_edge) / resolution;
+        long histogram[resolution][3];
+        int interval = (right_edge - left_edge) / resolution - 1;
         int remainder = (right_edge - left_edge) % resolution;
         for (int bin = 0; bin < resolution; bin++) {
           if (bin == 0) {
@@ -253,11 +253,11 @@ void loop() {
             histogram[bin][1] = histogram[bin][0] + interval;
             histogram[bin][2] = 0;
           } else if (bin == resolution - 1) {
-            histogram[bin][0] = histogram[bin-1][1];
+            histogram[bin][0] = histogram[bin-1][1] + 1;
             histogram[bin][1] = right_edge;
             histogram[bin][2] = 0;
           } else {
-            histogram[bin][0] = histogram[bin-1][1];
+            histogram[bin][0] = histogram[bin-1][1] + 1;
             histogram[bin][1] = histogram[bin][0] + interval;
             histogram[bin][2] = 0;
           }
@@ -265,16 +265,18 @@ void loop() {
         int mid;
         int l_pos;
         int r_pos;
+        digitalWrite(tr_pwr_pin, HIGH);
         while (command != "STP") {
           reading = denoisedRead(&signal_pin, &ir_pwr_pin);
           l_pos = 0;
           r_pos = resolution - 1;
           while (l_pos <= r_pos) {
             mid = l_pos + (r_pos - l_pos) / 2;
-            if (reading >= histogram[mid][0] && reading < histogram[mid][1]) {
+            if (reading >= histogram[mid][0] && reading <= histogram[mid][1]) {
               histogram[mid][2]++;
+              break;
             }
-            if (reading < histogram[mid][0]) {
+            if (reading > histogram[mid][1]) {
               l_pos = mid + 1;
             } else {
               r_pos = mid - 1;
@@ -283,6 +285,7 @@ void loop() {
           getCommand();
           delay(1);
         }
+        digitalWrite(tr_pwr_pin, LOW);
         for (int bin = 0; bin < resolution; bin++) {
           Serial.print("[");
           Serial.print(histogram[bin][0]);
