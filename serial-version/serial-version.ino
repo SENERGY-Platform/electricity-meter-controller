@@ -262,9 +262,26 @@ void loop() {
             histogram[bin][2] = 0;
           }
         }
+        int mid;
+        int l_pos;
+        int r_pos;
         while (command != "STP") {
+          reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+          l_pos = 0;
+          r_pos = resolution - 1;
+          while (l_pos <= r_pos) {
+            mid = l_pos + (r_pos - l_pos) / 2;
+            if (reading >= histogram[mid][0] && reading < histogram[mid][1]) {
+              histogram[mid][2]++;
+            }
+            if (reading < histogram[mid][0]) {
+              l_pos = mid + 1;
+            } else {
+              r_pos = mid - 1;
+            }
+          }
           getCommand();
-          delay(10);
+          delay(1);
         }
         for (int bin = 0; bin < resolution; bin++) {
           Serial.print("[");
