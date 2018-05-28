@@ -56,6 +56,29 @@ void blinkLED(const int *led_pin, int times=1, int pause=60) {
 }
 
 
+void setup() {
+  Serial.begin(9600);
+  // wait for serial port to connect. Needed for native USB port only
+  while (!Serial) {
+    delay(1);
+  }
+
+  // set pins
+  pinMode(ir_pwr_pin, OUTPUT);
+  pinMode(led_pwr_pin, OUTPUT);
+  pinMode(dip_pwr_pin, OUTPUT);
+  pinMode(tr_pwr_pin, OUTPUT);
+  setupDipPins(dip_pins, sizeof(dip_pins));
+
+  // print start message
+  delay(2000);
+  readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
+  blinkLED(&led_pwr_pin, 1, 500);
+  delay(500);
+  Serial.println(F("RDY"));
+}
+
+
 int denoisedRead(const int *signal_pin, const int *ir_pwr_pin, int pause=1800) {
   int reading_ir, reading_no_ir;
   digitalWrite(*ir_pwr_pin, HIGH);
@@ -95,28 +118,6 @@ String readLine(int timeout = 3000) {
     }
     return line;
   }
-}
-
-void setup() {
-  Serial.begin(9600);
-  // wait for serial port to connect. Needed for native USB port only
-  while (!Serial) {
-    delay(1);
-  }
-
-  // set pins
-  pinMode(ir_pwr_pin, OUTPUT);
-  pinMode(led_pwr_pin, OUTPUT);
-  pinMode(dip_pwr_pin, OUTPUT);
-  pinMode(tr_pwr_pin, OUTPUT);
-  setupDipPins(dip_pins, sizeof(dip_pins));
-
-  // print start message
-  delay(2000);
-  readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
-  blinkLED(&led_pwr_pin, 1, 500);
-  delay(500);
-  Serial.println(F("RDY"));
 }
 
 
@@ -289,26 +290,20 @@ void buildHistogram() {
 }
 
 
-bool detected;
-long current_ms;
-long iteration;
-long last_loop;
-long detection_threshold_count;
-long no_detection_threshold_count;
-
-int left_boundary = 0;
-int right_boundary = 0;
+//left_boundary = conf_a
+//right_boundary = conf_b
 
 void intervalDetection() {
   digitalWrite(tr_pwr_pin, HIGH);
-  detected = false;
-  detection_threshold_count = 0;
-  no_detection_threshold_count = 0;
-  last_loop = 0;
+  bool detected = false;
+  int detection_threshold_count = 0;
+  int no_detection_threshold_count = 0;
+  long current_ms;
+  long last_loop = 0;
   while (command != "STP") {
     reading = denoisedRead(&signal_pin, &ir_pwr_pin);
     current_ms = millis();
-    if (reading >= left_boundary && reading <= right_boundary) {
+    if (reading >= conf_a && reading <= conf_b) {
       if (detection_threshold_count < detection_threshold) {
         detection_threshold_count++;
       } else {
@@ -346,34 +341,28 @@ void intervalDetection() {
 }
 
 
-long reading_sum;
-long average;
-long current_avg;
-long tmp_avg;
-bool calibrated;
-long new_avg_threshold_count;
-
-int new_avg_threshold = 0;
-int lower_limit_distance = 0;
+//new_avg_threshold = conf_a
+//lower_limit_distance = conf_b
 
 void averageDetection() {
   digitalWrite(tr_pwr_pin, HIGH);
-  detected = false;
-  reading_sum = 0;
-  average = 0;
-  current_avg = 0;
-  tmp_avg = 0;
-  iteration = 1;
-  new_avg_threshold_count = 0;
-  calibrated = false;
-  detection_threshold_count = 0;
-  no_detection_threshold_count = 0;
-  last_loop = 0;
+  bool detected = false;
+  int detection_threshold_count = 0;
+  int no_detection_threshold_count = 0;
+  bool calibrated = false;
+  long reading_sum = 0;
+  long average = 0;
+  long current_avg = 0;
+  long tmp_avg = 0;
+  long new_avg_threshold_count = 0;
+  long iteration = 1;
+  long current_ms;
+  long last_loop = 0;
   while (command != "STP") {
     reading = denoisedRead(&signal_pin, &ir_pwr_pin);
     current_ms = millis();
     if (calibrated == true) {
-      if (reading <= (current_avg - lower_limit_distance)) {
+      if (reading <= (current_avg - conf_b)) {
         if (detection_threshold_count < detection_threshold) {
           detection_threshold_count++;
         } else {
@@ -408,9 +397,9 @@ void averageDetection() {
         new_avg_threshold_count = 0;
       }
     } else {
-      new_avg_threshold_count = new_avg_threshold;
+      new_avg_threshold_count = conf_a;
     }
-    if (new_avg_threshold_count == new_avg_threshold) {
+    if (new_avg_threshold_count == conf_a) {
       current_avg = tmp_avg;
       reading_sum = 0;
       iteration = 1;
