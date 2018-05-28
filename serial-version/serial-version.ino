@@ -143,7 +143,7 @@ void manualRead() {
 }
 
 
-char mode = 'H';
+char mode = 'I';
 int conf_a = 0;
 int conf_b = 0;
 int detection_threshold = 0;
@@ -453,7 +453,7 @@ void loop() {
 
   if (command == "STRT") {
     switch (mode) {
-      case 'H':
+      case 'I':
         intervalDetection();
         break;
       case 'A':
