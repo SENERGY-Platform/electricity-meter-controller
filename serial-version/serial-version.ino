@@ -156,7 +156,7 @@ void configure() {
     String conf_line = readLine();
     if (conf_line != "") {
       int pos = conf_line.indexOf(":");
-      mode = conf_line.substring(0, pos).toInt();
+      mode = conf_line.substring(0, pos).charAt(0);
       int pos2 = conf_line.indexOf(":", pos+1);
       conf_a = conf_line.substring(pos+1, pos2).toInt();
       int pos3 = conf_line.indexOf(":", pos2+1);
