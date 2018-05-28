@@ -19,13 +19,6 @@ const pdcm dip_pins[] = {
   {8, "E", "J"}
 };
 
-int new_avg_threshold = 0;
-int detection_threshold = 0;
-int no_detection_threshold = 0;
-int lower_limit_distance = 0;
-int left_boundary = 0;
-int right_boundary = 0;
-
 
 void setupDipPins(const pdcm *pins, int arr_size) {
   for (int i = 0; i < arr_size / sizeof(pdcm); i++) {
@@ -139,6 +132,18 @@ void getCommand() {
   }
 }
 
+
+int new_avg_threshold = 0;
+int detection_threshold = 0;
+int no_detection_threshold = 0;
+int lower_limit_distance = 0;
+int left_boundary = 0;
+int right_boundary = 0;
+int conf_a = 0;
+int conf_b = 0;
+char mode = "H";
+
+
 int reading;
 long current_ms;
 bool detected;
@@ -161,6 +166,36 @@ void loop() {
   if (command == "ID") {
     Serial.println(hw_id);
     command = "";
+    Serial.println(F("RDY"));
+  }
+
+  if (command == "CONF") {
+    Serial.println(F("M:CA:CB:DT:NDT"));
+    i_count = 10;
+    while (command == "CONF") {
+      String conf_line = readLine();
+      if (conf_line != "") {
+        int pos = conf_line.indexOf(":");
+        mode = conf_line.substring(0, pos).toInt();
+        int pos2 = conf_line.indexOf(":", pos+1);
+        conf_a = conf_line.substring(pos+1, pos2).toInt();
+        int pos3 = conf_line.indexOf(":", pos2+1);
+        conf_b = conf_line.substring(pos2+1, pos3).toInt();
+        int pos4 = conf_line.indexOf(":", pos3+1);
+        detection_threshold = conf_line.substring(pos3+1, pos4).toInt();
+        no_detection_threshold = conf_line.substring(pos4+1).toInt();
+        Serial.println(String(mode) + ":" + String(conf_a) + ":" + String(conf_b) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold));
+        command = "";
+      } else {
+        if (i_count < 1) {
+          Serial.println(String(mode) + ":" + String(conf_a) + ":" + String(conf_b) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold));
+          command = "";
+          break;
+        }
+        delay(5000 / i_count);
+        i_count--;
+      }
+    }
     Serial.println(F("RDY"));
   }
 
