@@ -7,16 +7,16 @@ const int led_pwr_pin = 11;
 
 struct pdcm {
   int pin;
-  char* code_on;
-  char* code_off;
+  char code_on;
+  char code_off;
 };
 
 const pdcm dip_pins[] = {
-  {13, "A", "F"},
-  {12, "B", "G"},
-  {5, "C", "H"},
-  {7, "D", "I"},
-  {8, "E", "J"}
+  {13, 'A', 'F'},
+  {12, 'B', 'G'},
+  {5, 'C', 'H'},
+  {7, 'D', 'I'},
+  {8, 'E', 'J'}
 };
 
 
@@ -27,7 +27,7 @@ void setupDipPins(const pdcm *pins, int arr_size) {
 }
 
 
-String hw_id = "";
+char hw_id[6] = "_ERR_";
 
 void readDips(const int *pwr, pdcm *pins, int arr_size) {
   digitalWrite(*pwr, HIGH);
@@ -35,9 +35,9 @@ void readDips(const int *pwr, pdcm *pins, int arr_size) {
   for (int i = 0; i < arr_size / sizeof(pdcm); i++) {
      int state = digitalRead(pins[i].pin);
      if (state == 1) {
-        hw_id += pins[i].code_on;
+        hw_id[i] = pins[i].code_on;
      } else {
-        hw_id += pins[i].code_off;
+        hw_id[i] = pins[i].code_off;
      }
   }
   digitalWrite(*pwr, LOW);
