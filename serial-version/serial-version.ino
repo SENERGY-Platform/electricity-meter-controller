@@ -181,11 +181,10 @@ void configure() {
 
 int reading;
 
-void findEdges() {
+void findBoundaries() {
   digitalWrite(tr_pwr_pin, HIGH);
   int left_edge = -100;
   int right_edge = 0;
-  bool change = false;
   while (command != "STP") {
     getCommand();
     reading = denoisedRead(&signal_pin, &ir_pwr_pin);
@@ -194,17 +193,15 @@ void findEdges() {
     }
     if (reading >= 0 && reading < left_edge) {
       left_edge = reading;
-      change = true;
     }
     if (reading > right_edge) {
       right_edge = reading;
-      change = true;
     }
-    if (change == true) {
+    if (command == "RES") {
       Serial.print(left_edge);
       Serial.print(F(":"));
       Serial.println(right_edge);
-      change = false;
+      command = "";
     }
     delay(1);
   }
@@ -247,6 +244,7 @@ void buildHistogram() {
       int r_pos;
       digitalWrite(tr_pwr_pin, HIGH);
       while (command != "STP") {
+        getCommand();
         reading = denoisedRead(&signal_pin, &ir_pwr_pin);
         l_pos = 0;
         r_pos = resolution - 1;
@@ -262,21 +260,23 @@ void buildHistogram() {
             r_pos = mid - 1;
           }
         }
-        getCommand();
+        if (command == "RES") {
+          for (int bin = 0; bin < resolution; bin++) {
+            Serial.print(histogram[bin][0]);
+            Serial.print(":");
+            Serial.print(histogram[bin][1]);
+            Serial.print(":");
+            Serial.print(histogram[bin][2]);
+            if (bin != resolution - 1) {
+              Serial.print(";");
+            }
+          }
+          Serial.println();
+          command = "";
+        }
         delay(1);
       }
       digitalWrite(tr_pwr_pin, LOW);
-      for (int bin = 0; bin < resolution; bin++) {
-        Serial.print(histogram[bin][0]);
-        Serial.print(":");
-        Serial.print(histogram[bin][1]);
-        Serial.print(":");
-        Serial.print(histogram[bin][2]);
-        if (bin != resolution - 1) {
-          Serial.print(";");
-        }
-      }
-      Serial.println();
     } else {
       if (i_count < 1) {
         Serial.println(F("NaN:NaN:NaN"));
@@ -441,8 +441,8 @@ void loop() {
     Serial.println(F("RDY"));
   }
 
-  if (command == "FE") {
-    findEdges();
+  if (command == "FB") {
+    findBoundaries();
     Serial.println(F("RDY"));
   }
 
