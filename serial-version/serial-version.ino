@@ -165,11 +165,10 @@ void configure() {
       detection_threshold = conf_line.substring(pos3+1, pos4).toInt();
       no_detection_threshold = conf_line.substring(pos4+1).toInt();
       Serial.println(String(mode) + ":" + String(conf_a) + ":" + String(conf_b) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold));
-      command = "";
+      break;
     } else {
       if (i_count < 1) {
         Serial.println(String(mode) + ":" + String(conf_a) + ":" + String(conf_b) + ":" + String(detection_threshold) + ":" + String(no_detection_threshold));
-        command = "";
         break;
       }
       delay(5000 / i_count);
@@ -201,7 +200,7 @@ void findBoundaries() {
       Serial.print(left_edge);
       Serial.print(F(":"));
       Serial.println(right_edge);
-      command = "";
+      command = "FB";
     }
     delay(1);
   }
@@ -272,7 +271,7 @@ void buildHistogram() {
             }
           }
           Serial.println();
-          command = "";
+          command = "HST";
         }
         delay(1);
       }
@@ -280,7 +279,6 @@ void buildHistogram() {
     } else {
       if (i_count < 1) {
         Serial.println(F("NaN:NaN:NaN"));
-        command = "";
         break;
       }
       delay(5000 / i_count);
@@ -427,7 +425,6 @@ void loop() {
 
   if (command == "ID") {
     Serial.println(hw_id);
-    command = "";
     Serial.println(F("RDY"));
   }
 
@@ -463,5 +460,6 @@ void loop() {
     Serial.println(F("RDY"));
   }
 
+  command = "";
   delay(10);
 }
