@@ -196,15 +196,12 @@ void findBoundaries() {
     if (reading > right_edge) {
       right_edge = reading;
     }
-    if (command == "RES") {
-      Serial.print(left_edge);
-      Serial.print(F(":"));
-      Serial.println(right_edge);
-      command = "FB";
-    }
     delay(1);
   }
   digitalWrite(tr_pwr_pin, LOW);
+  Serial.print(left_edge);
+  Serial.print(F(":"));
+  Serial.println(right_edge);
 }
 
 
@@ -259,23 +256,20 @@ void buildHistogram() {
             r_pos = mid - 1;
           }
         }
-        if (command == "RES") {
-          for (int bin = 0; bin < resolution; bin++) {
-            Serial.print(histogram[bin][0]);
-            Serial.print(":");
-            Serial.print(histogram[bin][1]);
-            Serial.print(":");
-            Serial.print(histogram[bin][2]);
-            if (bin != resolution - 1) {
-              Serial.print(";");
-            }
-          }
-          Serial.println();
-          command = "HST";
-        }
         delay(1);
       }
       digitalWrite(tr_pwr_pin, LOW);
+      for (int bin = 0; bin < resolution; bin++) {
+        Serial.print(histogram[bin][0]);
+          Serial.print(":");
+          Serial.print(histogram[bin][1]);
+          Serial.print(":");
+          Serial.print(histogram[bin][2]);
+          if (bin != resolution - 1) {
+            Serial.print(";");
+          }
+        }
+        Serial.println();
     } else {
       if (i_count < 1) {
         Serial.println(F("NaN:NaN:NaN"));
