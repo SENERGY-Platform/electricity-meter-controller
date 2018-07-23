@@ -3,7 +3,7 @@ const int ir_pwr_pin = 6;
 const int dip_pwr_pin = 9;
 const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-const char sw_version[] = "2.11.5";
+const char sw_version[] = "2.11.6";
 
 struct pdcm {
   int pin;
@@ -79,6 +79,7 @@ void setup() {
   Serial.print(sw_version);
   Serial.print(":");
   Serial.println(hw_id);
+  delay(100);
   Serial.println(F("RDY"));
 }
 
