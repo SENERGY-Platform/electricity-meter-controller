@@ -3,7 +3,7 @@ const int ir_pwr_pin = 6;
 const int dip_pwr_pin = 9;
 const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-const char sw_version[] = "2.11.4";
+const char sw_version[] = "2.11.5";
 
 struct pdcm {
   int pin;
@@ -104,11 +104,13 @@ int noAmbientSmoothedRead(const int *signal_pin, const int *ir_pwr_pin, int paus
   delayMicroseconds(pause);
   reading_no_ambient = reading_ir - analogRead(*signal_pin);
   rema = rema + (reading_no_ambient - rema) * snapCurve(abs(reading_no_ambient - rema) * multi);
+  /* debug
   Serial.print(reading_no_ambient); // reading
   Serial.print(",");
   Serial.print(static_cast<int>(floor(rema))); // rema reading
   Serial.print(",");
   Serial.println(reading_ir - reading_no_ambient); // ambient
+  */
   return static_cast<int>(floor(rema));
 }
 
