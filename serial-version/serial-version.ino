@@ -336,7 +336,7 @@ void intervalDetection() {
         if (no_detection_threshold_count < no_detection_threshold) {
           no_detection_threshold_count++;
         } else {
-          //no_detection_threshold_count = 0;
+          no_detection_threshold_count = 0;
           detection_threshold_count = 0;
           detected = false;
           digitalWrite(led_pwr_pin, LOW);
@@ -352,6 +352,13 @@ void intervalDetection() {
         blinkLED(&led_pwr_pin, 1, 0);
       }
     }
+    /* debug
+    Serial.print("det_t:");
+    Serial.print(detection_threshold_count);
+    Serial.print(",");
+    Serial.print("no_det_t:");
+    Serial.println(no_detection_threshold_count);
+    */
   }
   digitalWrite(tr_pwr_pin, LOW);
 }
@@ -393,7 +400,7 @@ void averageDetection() {
           if (no_detection_threshold_count < no_detection_threshold) {
             no_detection_threshold_count++;
           } else {
-            //no_detection_threshold_count = 0;
+            no_detection_threshold_count = 0;
             detection_threshold_count = 0;
             detected = false;
             blinkLED(&led_pwr_pin);
