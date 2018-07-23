@@ -3,7 +3,7 @@ const int ir_pwr_pin = 6;
 const int dip_pwr_pin = 9;
 const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-
+const char sw_version[] = "2.11.4";
 
 struct pdcm {
   int pin;
@@ -31,7 +31,7 @@ char hw_id[6] = "_ERR_";
 
 void readDips(const int *pwr, pdcm *pins, int arr_size) {
   digitalWrite(*pwr, HIGH);
-  delay(10);
+  delay(1);
   for (int i = 0; i < arr_size / sizeof(pdcm); i++) {
      int state = digitalRead(pins[i].pin);
      if (state == 1) {
@@ -73,32 +73,56 @@ void setup() {
   // print start message
   delay(2000);
   readDips(&dip_pwr_pin, dip_pins, sizeof(dip_pins));
-  blinkLED(&led_pwr_pin, 1, 500);
   delay(500);
+  blinkLED(&led_pwr_pin, 1, 500);
+  Serial.print(F("FERRARIS-SENSOR:V"));
+  Serial.print(sw_version);
+  Serial.print(":");
+  Serial.println(hw_id);
   Serial.println(F("RDY"));
 }
 
+float snap;
 
-int denoisedRead(const int *signal_pin, const int *ir_pwr_pin, int pause=1800) {
-  int reading_ir, reading_no_ir;
+float snapCurve(float val) {
+  snap = (1 - 1 / (val + 1)) * 2;
+  if (snap > 1) {
+    return 1;
+  }
+  return snap;
+}
+
+int reading_ir;
+int reading_no_ambient;
+float rema = 0.0;
+
+int noAmbientSmoothedRead(const int *signal_pin, const int *ir_pwr_pin, int pause=1800, float multi=0.02) {
   digitalWrite(*ir_pwr_pin, HIGH);
   delayMicroseconds(pause);
   reading_ir = analogRead(*signal_pin);
   digitalWrite(*ir_pwr_pin, LOW);
   delayMicroseconds(pause);
-  reading_no_ir = analogRead(*signal_pin);
-  // debug line
-  //Serial.print(String(reading_ir) + " - " + String(reading_no_ir) + " = ");
-  return reading_ir - reading_no_ir;
+  reading_no_ambient = reading_ir - analogRead(*signal_pin);
+  rema = rema + (reading_no_ambient - rema) * snapCurve(abs(reading_no_ambient - rema) * multi);
+  Serial.print(reading_no_ambient); // reading
+  Serial.print(",");
+  Serial.print(static_cast<int>(floor(rema))); // rema reading
+  Serial.print(",");
+  Serial.println(reading_ir - reading_no_ambient); // ambient
+  return static_cast<int>(floor(rema));
 }
 
+String line;
+bool endline;
+int i_count;
+int interval;
 
 String readLine(int timeout = 3000) {
-  String line = "";
-  bool endline = false;
-  int i_count = 10;
-  int interval = timeout / i_count;
   if (Serial.available() > 0) {
+    line = "";
+    endline = false;
+    i_count = 10;
+    interval = timeout / i_count;
     while (endline == false) {
       if (Serial.available() > 0) {
         char recieved = Serial.read();
@@ -118,26 +142,26 @@ String readLine(int timeout = 3000) {
     }
     return line;
   }
+  return "";
 }
 
 
 String command = "";
 
 void getCommand() {
-  String line = readLine();
-  if (line != "") {
-    command = line;
+  command = readLine();
+  if (command != "") {
     blinkLED(&led_pwr_pin);
   }
 }
 
 
-void manualRead() {
+void manualRead(int pause=100) {
   digitalWrite(tr_pwr_pin, HIGH);
   while (command != "STP") {
     getCommand();
-    Serial.println(denoisedRead(&signal_pin, &ir_pwr_pin));
-    delay(100);
+    Serial.println(noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin));
+    delay(pause);
   }
   digitalWrite(tr_pwr_pin, LOW);
 }
@@ -186,7 +210,7 @@ void findBoundaries() {
   int right_edge = 0;
   while (command != "STP") {
     getCommand();
-    reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+    reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
     if (left_edge == -100) {
       left_edge = reading;
     }
@@ -196,7 +220,6 @@ void findBoundaries() {
     if (reading > right_edge) {
       right_edge = reading;
     }
-    delay(1);
   }
   digitalWrite(tr_pwr_pin, LOW);
   Serial.print(left_edge);
@@ -241,7 +264,7 @@ void buildHistogram() {
       digitalWrite(tr_pwr_pin, HIGH);
       while (command != "STP") {
         getCommand();
-        reading = denoisedRead(&signal_pin, &ir_pwr_pin);
+        reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
         l_pos = 0;
         r_pos = resolution - 1;
         while (l_pos <= r_pos) {
@@ -256,7 +279,6 @@ void buildHistogram() {
             r_pos = mid - 1;
           }
         }
-        delay(1);
       }
       digitalWrite(tr_pwr_pin, LOW);
       for (int bin = 0; bin < resolution; bin++) {
@@ -290,11 +312,11 @@ void intervalDetection() {
   bool detected = false;
   int detection_threshold_count = 0;
   int no_detection_threshold_count = 0;
-  long current_ms;
-  long last_loop = 0;
+  unsigned long current_ms;
+  unsigned long last_loop = 0;
   while (command != "STP") {
-    reading = denoisedRead(&signal_pin, &ir_pwr_pin);
     current_ms = millis();
+    reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
     if (reading >= conf_a && reading <= conf_b) {
       if (detection_threshold_count < detection_threshold) {
         detection_threshold_count++;
@@ -311,7 +333,7 @@ void intervalDetection() {
         if (no_detection_threshold_count < no_detection_threshold) {
           no_detection_threshold_count++;
         } else {
-          no_detection_threshold_count = 0;
+          //no_detection_threshold_count = 0;
           detection_threshold_count = 0;
           detected = false;
           digitalWrite(led_pwr_pin, LOW);
@@ -320,7 +342,6 @@ void intervalDetection() {
         detection_threshold_count = 0;
       }
     }
-    delay(1);
     getCommand();
     if (current_ms - last_loop > 5000) {
       last_loop = current_ms;
@@ -348,11 +369,11 @@ void averageDetection() {
   long tmp_avg = 0;
   long new_avg_threshold_count = 0;
   long iteration = 1;
-  long current_ms;
-  long last_loop = 0;
+  unsigned long current_ms;
+  unsigned long last_loop = 0;
   while (command != "STP") {
-    reading = denoisedRead(&signal_pin, &ir_pwr_pin);
     current_ms = millis();
+    reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
     if (calibrated == true) {
       if (reading <= (current_avg - conf_b)) {
         if (detection_threshold_count < detection_threshold) {
@@ -369,7 +390,7 @@ void averageDetection() {
           if (no_detection_threshold_count < no_detection_threshold) {
             no_detection_threshold_count++;
           } else {
-            no_detection_threshold_count = 0;
+            //no_detection_threshold_count = 0;
             detection_threshold_count = 0;
             detected = false;
             blinkLED(&led_pwr_pin);
@@ -403,7 +424,6 @@ void averageDetection() {
       Serial.println(String(current_avg));
     }
     tmp_avg = average;
-    delay(1);
     getCommand();
     if (current_ms - last_loop > 5000) {
       last_loop = current_ms;
@@ -416,11 +436,6 @@ void averageDetection() {
 
 void loop() {
   getCommand();
-
-  if (command == "ID") {
-    Serial.println(hw_id);
-    Serial.println(F("RDY"));
-  }
 
   if (command == "CONF") {
     configure();
