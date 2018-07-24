@@ -3,7 +3,7 @@ const int ir_pwr_pin = 6;
 const int dip_pwr_pin = 9;
 const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-const char sw_version[] = "2.11.7";
+const char sw_version[] = "2.11.8";
 
 struct pdcm {
   int pin;
@@ -57,7 +57,7 @@ void blinkLED(const int *led_pin, int times=1, int pause=60) {
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(4000000);
   // wait for serial port to connect. Needed for native USB port only
   while (!Serial) {
     delay(1);
