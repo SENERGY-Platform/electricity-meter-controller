@@ -3,7 +3,7 @@ const int ir_pwr_pin = 6;
 const int dip_pwr_pin = 9;
 const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-const char sw_version[] = "2.11.6";
+const char sw_version[] = "2.11.7";
 
 struct pdcm {
   int pin;
@@ -97,7 +97,16 @@ int reading_ir;
 int reading_no_ambient;
 float rema = 0.0;
 
-int noAmbientSmoothedRead(const int *signal_pin, const int *ir_pwr_pin, int pause=1800, float multi=0.02) {
+void initSmoother(const int *signal_pin, const int *ir_pwr_pin, int pause=1800) {
+  digitalWrite(*ir_pwr_pin, HIGH);
+  delayMicroseconds(pause);
+  reading_ir = analogRead(*signal_pin);
+  digitalWrite(*ir_pwr_pin, LOW);
+  delayMicroseconds(pause);
+  rema = static_cast<float>(reading_ir - analogRead(*signal_pin));
+}
+
+int noAmbientSmoothedRead(const int *signal_pin, const int *ir_pwr_pin, int pause=1800, float multi=0.003) {
   digitalWrite(*ir_pwr_pin, HIGH);
   delayMicroseconds(pause);
   reading_ir = analogRead(*signal_pin);
@@ -161,6 +170,7 @@ void getCommand() {
 
 void manualRead(int pause=100) {
   digitalWrite(tr_pwr_pin, HIGH);
+  initSmoother(&signal_pin, &ir_pwr_pin);
   while (command != "STP") {
     getCommand();
     Serial.println(noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin));
@@ -211,6 +221,7 @@ void findBoundaries() {
   digitalWrite(tr_pwr_pin, HIGH);
   int left_edge = -100;
   int right_edge = 0;
+  initSmoother(&signal_pin, &ir_pwr_pin);
   while (command != "STP") {
     getCommand();
     reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
@@ -265,6 +276,7 @@ void buildHistogram() {
       int l_pos;
       int r_pos;
       digitalWrite(tr_pwr_pin, HIGH);
+      initSmoother(&signal_pin, &ir_pwr_pin);
       while (command != "STP") {
         getCommand();
         reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
@@ -317,6 +329,7 @@ void intervalDetection() {
   int no_detection_threshold_count = 0;
   unsigned long current_ms;
   unsigned long last_loop = 0;
+  initSmoother(&signal_pin, &ir_pwr_pin);
   while (command != "STP") {
     current_ms = millis();
     reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
@@ -381,6 +394,7 @@ void averageDetection() {
   long iteration = 1;
   unsigned long current_ms;
   unsigned long last_loop = 0;
+  initSmoother(&signal_pin, &ir_pwr_pin);
   while (command != "STP") {
     current_ms = millis();
     reading = noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin);
