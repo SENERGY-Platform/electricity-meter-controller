@@ -3,7 +3,7 @@ const int ir_pwr_pin = 6;
 const int dip_pwr_pin = 9;
 const int tr_pwr_pin = 10;
 const int led_pwr_pin = 11;
-const char sw_version[] = "2.11.8";
+const char sw_version[] = "2.12.0";
 
 struct pdcm {
   int pin;
@@ -168,13 +168,20 @@ void getCommand() {
 }
 
 
-void manualRead(int pause=100) {
+void manualRead(int pause=50) {
   digitalWrite(tr_pwr_pin, HIGH);
   initSmoother(&signal_pin, &ir_pwr_pin);
-  while (command != "STP") {
-    getCommand();
-    Serial.println(noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin));
-    delay(pause);
+  if (pause > 0) {
+    while (command != "STP") {
+      getCommand();
+      Serial.println(noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin));
+      delay(pause);
+    }
+  } else {
+    while (command != "STP") {
+      getCommand();
+      Serial.println(noAmbientSmoothedRead(&signal_pin, &ir_pwr_pin));
+    }
   }
   digitalWrite(tr_pwr_pin, LOW);
 }
@@ -468,6 +475,11 @@ void loop() {
   
   if (command == "MR") {
     manualRead();
+    Serial.println(F("RDY"));
+  }
+
+  if (command == "NDMR") {
+    manualRead(0);
     Serial.println(F("RDY"));
   }
 
